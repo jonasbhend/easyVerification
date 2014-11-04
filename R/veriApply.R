@@ -37,7 +37,7 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   
   ## dimensions of array to compute scores
   nens <- tail(dim(fcst), 1)
-  ntim <- head(tail(dim(ens), 2), 1)
+  ntim <- head(tail(dim(fcst), 2), 1)
   nrest <- length(obs)/ntim
   
   ## run the function
@@ -85,7 +85,7 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
         xout <- aperm(array(x, odims), operm)
       } else if (length(x) == prod(odims[-nodims])) {
         xout <- array(x, odims[-nodims])
-      }
+      } 
     } else {
       xout <- x
     }
