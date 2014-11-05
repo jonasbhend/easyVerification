@@ -70,7 +70,7 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   out <- Tmatrix(apply(xall[xmask,,,drop=F], 
                        MARGIN=1, 
                        FUN=veriUnwrap, 
-                       verifun=verifun, prob=prob, threshold=threshold, ...))[maskexpand,,drop=F]
+                       verifun=verifun, prob=prob, threshold=threshold, ...))
   
   ## reformat the output by converting to list
   if (is.list(out)){
@@ -78,9 +78,11 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
     olist <- list()
     for (ln in lnames) olist[[ln]] <- sapply(out, function(x) x[[ln]])
   } else {
-    olist <- list(c(out))
+    olist <- list(out)
   }
-  
+
+  ## reexpand the masked values
+  olist <- lapply(olist, function(x) as.matrix(x)[maskexpand,])
   
   ## rearrange output to original dimensions
   out <- lapply(olist, function(x){
@@ -93,7 +95,7 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
       if (length(x) == length(obs)){
         operm <- 1:nodims
         operm[otdim] <- nodims
-        xout <- aperm(array(x, odims), operm)
+        xout <- if (nodims == 1) c(x) else aperm(array(x, odims), operm)
       } else if (length(x) == prod(odims[-otdim])) {
         xout <- array(x, odims[-otdim])
       } 

@@ -39,3 +39,4 @@ test_that('Missing value handling', {
   expect_equal(veriApply('EnsMe', xx2, x2), array(0, 2))
   expect_equal(veriApply('EnsMe', xx2, x2na), array(c(0, NA), 2))
 })
+
