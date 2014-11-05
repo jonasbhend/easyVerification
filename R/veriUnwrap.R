@@ -6,6 +6,7 @@
 #' @param x n x k + 1 matrix with n forecasts of k ensemble members
 #' plus the verifying observations
 #' @param verifun character string with function name to be executed
+#' @param nens number of ensemble members in forecast (see details)
 #' @param prob probability threshold for conversion of forecasts to 
 #' probability forecasts as in \code{\link{convert2prob}}
 #' @param threshold absolute threshold for conversion of forecasts to 
@@ -18,9 +19,16 @@
 #' (e.g. skill scores) the metric is computed over non-missing observation/forecast
 #' pairs only.
 #' 
+#' For computation of skill scores, reference forecasts can be provided. That is, the
+#' first \code{nens} columns of \code{x} contain the forecasts, the \code{(nens + 1):(ncol(x) - 1)}
+#' following columns contain the reference forecast, and the final column contains the observations.
+#' If no reference forecast is provided (i.e. \code{ncol(x) == nens + 1}), a climatological
+#' forecast is constructed from the \code{n} verifying observations.
+#' 
 #' @export
-veriUnwrap <- function(x, verifun, prob=NULL, threshold=NULL, ...){
+veriUnwrap <- function(x, verifun, nens=ncol(x) - 1, prob=NULL, threshold=NULL, ...){
   nn <- ncol(x)
+  stopifnot(nn >= nens + 1)
   vfun <- get(verifun)
   ## mask missing values
   xmask <- apply(!is.na(x), 1, all)
@@ -28,12 +36,17 @@ veriUnwrap <- function(x, verifun, prob=NULL, threshold=NULL, ...){
   ## check whether this is a skill score or a score
   is.skill <- substr(verifun, nchar(verifun) - 1, nchar(verifun)) == 'ss'
   if (is.skill){
-    xclim <- t(array(x[,nn], c(nrow(x), nrow(x))))
-    out <- vfun(convert2prob(x[,-nn], prob=prob, threshold=threshold),
-                convert2prob(xclim, prob=prob, threshold=threshold),
+    if (nn > nens + 1){
+      xref <- x[,-c(1:nens, nn)]
+    } else {
+      xref <- t(array(x[,nn], c(nrow(x), nrow(x))))      
+    }
+    out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
+                convert2prob(xref, prob=prob, threshold=threshold),
                 convert2prob(x[,nn], prob=prob, threshold=threshold), ...)
   } else {
-    out <- vfun(convert2prob(x[,-nn], prob=prob, threshold=threshold),
+    stopifnot(nn == nens + 1)
+    out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
                 convert2prob(x[,nn], prob=prob, threshold=threshold), ...)    
   }
 

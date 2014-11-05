@@ -40,3 +40,9 @@ test_that('Missing value handling', {
   expect_equal(veriApply('EnsMe', xx2, x2na), array(c(0, NA), 2))
 })
 
+test_that('Reference forecasts for skill scores', {
+  x <- rep(1,3)
+  xx <- array(rnorm(15, mean=1), c(3,5))
+  expect_true(veriApply('EnsCrpss', xx, x)$crpss < veriApply('EnsCrpss', xx, x, fcst.ref=0*xx)$crpss)
+  expect_equal(veriApply('EnsCrpss', xx, x)$crpss, veriApply('EnsCrpss', xx, x, fcst.ref=t(array(x, rep(length(x), 2))))$crpss)
+})

@@ -3,13 +3,16 @@
 \alias{veriUnwrap}
 \title{Unwrap arguments and hand over to function}
 \usage{
-veriUnwrap(x, verifun, prob = NULL, threshold = NULL, ...)
+veriUnwrap(x, verifun, nens = ncol(x) - 1, prob = NULL, threshold = NULL,
+  ...)
 }
 \arguments{
 \item{x}{n x k + 1 matrix with n forecasts of k ensemble members
 plus the verifying observations}
 
 \item{verifun}{character string with function name to be executed}
+
+\item{nens}{number of ensemble members in forecast (see details)}
 
 \item{prob}{probability threshold for conversion of forecasts to
 probability forecasts as in \code{\link{convert2prob}}}
@@ -28,5 +31,11 @@ Only forecasts with non-missing observation and complete ensembles are
 computed. All other forecasts are set to missing. For aggregate metrics
 (e.g. skill scores) the metric is computed over non-missing observation/forecast
 pairs only.
+
+For computation of skill scores, reference forecasts can be provided. That is, the
+first \code{nens} columns of \code{x} contain the forecasts, the \code{(nens + 1):(ncol(x) - 1)}
+following columns contain the reference forecast, and the final column contains the observations.
+If no reference forecast is provided (i.e. \code{ncol(x) == nens + 1}), a climatological
+forecast is constructed from the \code{n} verifying observations.
 }
 

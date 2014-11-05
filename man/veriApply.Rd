@@ -3,7 +3,7 @@
 \alias{veriApply}
 \title{Apply verification metrics from Specs-Verification to large datasets}
 \usage{
-veriApply(verifun, fcst, obs, tdim = length(dim(fcst)) - 1,
+veriApply(verifun, fcst, obs, fcst.ref = NULL, tdim = length(dim(fcst)) - 1,
   ensdim = length(dim(fcst)), prob = NULL, threshold = NULL,
   na.rm = FALSE, ...)
 }
@@ -13,6 +13,8 @@ veriApply(verifun, fcst, obs, tdim = length(dim(fcst)) - 1,
 \item{fcst}{array of forecast values (at least 2-dimensional)}
 
 \item{obs}{array or vector of verifying observations}
+
+\item{fcst.ref}{array of forecast values for the reference forecast (skill scores only)}
 
 \item{tdim}{index of dimension with the different forecasts}
 

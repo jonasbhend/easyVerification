@@ -3,6 +3,7 @@
 #' @param verifun Name of function to compute verification metric (score, skill score)
 #' @param fcst array of forecast values (at least 2-dimensional)
 #' @param obs array or vector of verifying observations
+#' @param fcst.ref array of forecast values for the reference forecast (skill scores only)
 #' @param tdim index of dimension with the different forecasts
 #' @param ensdim index of dimension with the different ensemble members
 #' @param prob probability threshold for category forecasts
@@ -19,7 +20,7 @@
 #' @keywords utilities
 #' @export
 #' 
-veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, ...){
+veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -36,9 +37,13 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   stopifnot(odims == dim(fcst)[-ensdim])
   stopifnot(odims[-otdim] == dim(fcst)[-c(ensdim, tdim)])
   
+  ## check reference forecast
+  if (!is.null(fcst.ref)) stopifnot(dim(fcst)[-ensdim] == dim(fcst.ref)[-ensdim])
+  
   ## make sure that forecasts (years) and ensembles are last in forecast array
   if (ensdim != nfdims | tdim != nfdims - 1){
     fcst <- aperm(fcst, c(setdiff(1:nfdims, c(tdim, ensdim)), c(tdim, ensdim)))
+    if (!is.null(fcst.ref)) fcst.ref <- aperm(fcst.ref, c(setdiff(1:nfdims, c(tdim, ensdim)), c(tdim, ensdim)))
   }
   if (otdim != nodims){
     obs <- aperm(obs, c(setdiff(1:nodims, otdim), otdim))    
@@ -46,11 +51,12 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   
   ## dimensions of array to compute scores
   nens <- tail(dim(fcst), 1)
+  nref <- if (!is.null(fcst.ref)) tail(dim(fcst.ref), 1) else 0
   ntim <- head(tail(dim(fcst), 2), 1)
   nrest <- length(obs)/ntim
   
   ## run the function
-  xall <- array(c(fcst, obs), c(nrest, ntim, nens+1))
+  xall <- array(c(fcst, fcst.ref, obs), c(nrest, ntim, nens+nref+1))
   ## mask missing values
   if (na.rm) {
     xmask <- apply(apply(!is.na(xall), 1:2, all), 1, any)
@@ -70,7 +76,9 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   out <- Tmatrix(apply(xall[xmask,,,drop=F], 
                        MARGIN=1, 
                        FUN=veriUnwrap, 
-                       verifun=verifun, prob=prob, threshold=threshold, ...))
+                       verifun=verifun, 
+                       nens=nens,
+                       prob=prob, threshold=threshold, ...))
   
   ## reformat the output by converting to list
   if (is.list(out)){
