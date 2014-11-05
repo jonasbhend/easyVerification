@@ -29,4 +29,12 @@ EnsRmse(ens, obs)
 \code{EnsMse} the mean squared error, and \code{EnsRmse} the square root of
 the mean squared error (for consistency with the veri package).
 }
+\examples{
+#forecast and observations
+obs <- rnorm(10)
+fcst <- array(rnorm(100), c(10,10))
+# compute the mean bias
+EnsError(fcst, obs, type='me')
+EnsMe(fcst, obs)
+}
 

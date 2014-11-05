@@ -1,15 +1,16 @@
 Package: veriWrapper
 Title: Forecast verification metrics for large datasets
-Version: 0.2
-Date: 2014-10-30
+Version: 0.3
+Date: 2014-11-05
 Authors@R: "Jonas Bhend <jonas.bhend@meteoswiss.ch> [aut, cre]"
-Description: This package provides functions to simplify application of forecast
-    verification metrcis to large datasets. The forecast metrics are imported
-    from the SpecsVerification package, a few (mostly deterministic) forecast scores
-    are provided with this package. Alternatively, new forecast scores can be 
-    implemented using the example scores provided in this package.
+Description: This package provides functions to simplify application of
+    forecast verification metrcis to large datasets. The forecast metrics are
+    imported from the SpecsVerification package, a few (mostly deterministic)
+    forecast scores are provided with this package. Alternatively, new forecast
+    scores can be implemented using the example scores provided in this
+    package.
 Depends:
-    R (>= 3.0.0),
+    R (>= 3.0),
     SpecsVerification
 Suggests:
     testthat

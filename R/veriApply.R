@@ -7,6 +7,14 @@
 #' @param ensdim index of dimension with the different ensemble members
 #' @param prob probability threshold for category forecasts
 #' @param threshold absolute threshold for category forecasts
+#' @param na.rm logical, should incomplete forecasts be used?
+#' @param ... additional arguments passed to \code{verifun}
+#' 
+#' @examples
+#' obs <- array(rnorm(1000*30), c(1000,30))
+#' fcst <- array(rnorm(1000*30*50), c(1000, 30, 50)) + 0.2*as.vector(obs)
+#' f.me <- veriApply('EnsMe', fcst, obs)
+#' 
 #' 
 #' @keywords utilities
 #' @export
@@ -22,11 +30,12 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   nfdims <- length(dim(fcst))
   odims <- if (is.vector(obs)) length(obs) else dim(obs)
   nodims <- length(odims)
-  otdim <- min(nodims, tdim)
+  otdim <- min(nodims, if (ensdim < tdim) tdim - 1 else tdim)
   ## check dimensions
   stopifnot(c(ensdim, tdim) <= nfdims)
   stopifnot(odims == dim(fcst)[-ensdim])
-
+  stopifnot(odims[-otdim] == dim(fcst)[-c(ensdim, tdim)])
+  
   ## make sure that forecasts (years) and ensembles are last in forecast array
   if (ensdim != nfdims | tdim != nfdims - 1){
     fcst <- aperm(fcst, c(setdiff(1:nfdims, c(tdim, ensdim)), c(tdim, ensdim)))
@@ -44,18 +53,24 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
   xall <- array(c(fcst, obs), c(nrest, ntim, nens+1))
   ## mask missing values
   if (na.rm) {
-    xmask <- apply(!is.na(xall), 1, any) & apply(!is.na(xall[,,nens+1, drop=F]), 1, any)
+    xmask <- apply(apply(!is.na(xall), 1:2, all), 1, any)
   } else {
     xmask <- apply(!is.na(xall), 1, all)
   }
   ## check whether there are complete forecast/observation pairs at all
   stopifnot(any(xmask))
+ 
+  ## indices for re-expansion of output
+  maskexpand <- rep(NA, length(xmask))
+  maskexpand[xmask] <- 1:sum(xmask)  
   
   ## run the workhorse
-  out <- t(apply(xall[xmask,,,drop=F], 
-                 MARGIN=1, 
-                 FUN=veriUnwrap, 
-                 verifun=verifun, prob=prob, threshold=threshold, ...))
+  Tmatrix <- function(x) if (is.matrix(x)) t(x) else as.matrix(x)
+    
+  out <- Tmatrix(apply(xall[xmask,,,drop=F], 
+                       MARGIN=1, 
+                       FUN=veriUnwrap, 
+                       verifun=verifun, prob=prob, threshold=threshold, ...))[maskexpand,,drop=F]
   
   ## reformat the output by converting to list
   if (is.list(out)){
@@ -66,10 +81,6 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
     olist <- list(c(out))
   }
   
-  ## re-expand the forecasts to account for missing values
-  maskexpand <- rep(NA, length(xmask))
-  maskexpand[xmask] <- 1:sum(xmask)
-  olist <- lapply(olist, function(x) as.matrix(x)[maskexpand,])
   
   ## rearrange output to original dimensions
   out <- lapply(olist, function(x){
@@ -83,8 +94,8 @@ veriApply <- function(verifun, fcst, obs, tdim=length(dim(fcst)) - 1, ensdim=len
         operm <- 1:nodims
         operm[otdim] <- nodims
         xout <- aperm(array(x, odims), operm)
-      } else if (length(x) == prod(odims[-nodims])) {
-        xout <- array(x, odims[-nodims])
+      } else if (length(x) == prod(odims[-otdim])) {
+        xout <- array(x, odims[-otdim])
       } 
     } else {
       xout <- x

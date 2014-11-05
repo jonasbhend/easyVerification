@@ -7,18 +7,20 @@
 \alias{EnsRmsess}
 \title{Compute various ensemble mean error metrics}
 \usage{
-EnsErrorss(ens, obs, type)
+EnsErrorss(ens, ens.ref, obs, type)
 
-EnsMess(ens, obs)
+EnsMess(ens, ens.ref, obs)
 
-EnsMaess(ens, obs)
+EnsMaess(ens, ens.ref, obs)
 
-EnsMsess(ens, obs)
+EnsMsess(ens, ens.ref, obs)
 
-EnsRmsess(ens, obs)
+EnsRmsess(ens, ens.ref, obs)
 }
 \arguments{
 \item{ens}{n x k matrix of n forecasts from k ensemble members}
+
+\item{ens.ref}{n x l matrix of m reference forecasts from l ensemble members}
 
 \item{obs}{n verifying observations}
 

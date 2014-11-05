@@ -1,3 +1,24 @@
+#' Unwrap arguments and hand over to function
+#' 
+#' decomposes input argument into forecast and verifying observations
+#' and hands these over to the function provided
+#' 
+#' @param x n x k + 1 matrix with n forecasts of k ensemble members
+#' plus the verifying observations
+#' @param verifun character string with function name to be executed
+#' @param prob probability threshold for conversion of forecasts to 
+#' probability forecasts as in \code{\link{convert2prob}}
+#' @param threshold absolute threshold for conversion of forecasts to 
+#' probability forecasts as in \code{\link{convert2prob}}
+#' @param ... additional arguments passed on to \code{verifun}
+#' 
+#' @details
+#' Only forecasts with non-missing observation and complete ensembles are
+#' computed. All other forecasts are set to missing. For aggregate metrics
+#' (e.g. skill scores) the metric is computed over non-missing observation/forecast
+#' pairs only.
+#' 
+#' @export
 veriUnwrap <- function(x, verifun, prob=NULL, threshold=NULL, ...){
   nn <- ncol(x)
   vfun <- get(verifun)
@@ -10,10 +31,10 @@ veriUnwrap <- function(x, verifun, prob=NULL, threshold=NULL, ...){
     xclim <- t(array(x[,nn], c(nrow(x), nrow(x))))
     out <- vfun(convert2prob(x[,-nn], prob=prob, threshold=threshold),
                 convert2prob(xclim, prob=prob, threshold=threshold),
-                convert2prob(x[,nn], prob=prob, threshold=threshold))
+                convert2prob(x[,nn], prob=prob, threshold=threshold), ...)
   } else {
     out <- vfun(convert2prob(x[,-nn], prob=prob, threshold=threshold),
-                convert2prob(x[,nn], prob=prob, threshold=threshold))    
+                convert2prob(x[,nn], prob=prob, threshold=threshold), ...)    
   }
 
   ## check whether output has to be expanded with NA

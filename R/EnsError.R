@@ -12,6 +12,14 @@
 #' @param obs n verifying observations 
 #' @param type specifying what error metric to compute, one of [me, mae, mse, rmse]
 #' 
+#' @examples
+#' #forecast and observations
+#' obs <- rnorm(10)
+#' fcst <- array(rnorm(100), c(10,10))
+#' # compute the mean bias
+#' EnsError(fcst, obs, type='me')
+#' EnsMe(fcst, obs)
+#' 
 #' @export
 EnsError <- function(ens, obs, type){
   stopifnot(is.matrix(ens), is.vector(obs), length(obs) == nrow(ens))

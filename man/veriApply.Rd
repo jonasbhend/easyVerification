@@ -21,9 +21,18 @@ veriApply(verifun, fcst, obs, tdim = length(dim(fcst)) - 1,
 \item{prob}{probability threshold for category forecasts}
 
 \item{threshold}{absolute threshold for category forecasts}
+
+\item{na.rm}{logical, should incomplete forecasts be used?}
+
+\item{...}{additional arguments passed to \code{verifun}}
 }
 \description{
 Apply verification metrics from Specs-Verification to large datasets
+}
+\examples{
+obs <- array(rnorm(1000*30), c(1000,30))
+fcst <- array(rnorm(1000*30*50), c(1000, 30, 50)) + 0.2*as.vector(obs)
+f.me <- veriApply('EnsMe', fcst, obs)
 }
 \keyword{utilities}
 
