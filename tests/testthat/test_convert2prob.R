@@ -5,10 +5,10 @@ xx <- array(1:12, c(3,4))
 x <- 1:12
 
 test_that("input argument is matrix or vector and non-missing", {
-  expect_error(convert2prob(xxx), 'Input argument not of type vector or matrix')
-  expect_error(convert2prob(as.factor(x)), 'Input argument not of type vector or matrix')
-  expect_error(convert2prob(as.data.frame(xx)), 'Input argument not of type vector or matrix')
-  expect_error(convert2prob(NA), 'No non-missing values in input')
+  expect_error(convert2prob(xxx))
+  expect_error(convert2prob(as.factor(x)))
+  expect_error(convert2prob(as.data.frame(xx)))
+  expect_error(convert2prob(NA))
 })
 
 test_that("argument is returned without modification", {
