@@ -26,13 +26,14 @@ convert2prob <- function(x, prob=NULL, threshold=NULL){
   } 
   ## convert probability to absolute threshold
   if (is.numeric(prob)){
-    threshold <- quantile(x, prob, na.rm=T)
+    threshold <- quantile(x, prob, na.rm=T, type=8)
   }
   ## compute occurence per class
   if (is.numeric(threshold)){
     threshold <- sort(threshold)
     nclass <- length(threshold) + 1
-    xtmp <- array(findInterval(x, threshold) + 1, dim(as.matrix(x)))
+    #xtmp <- array(findInterval(x, threshold) + 1, dim(as.matrix(x)))
+    xtmp <- array(apply(sapply(threshold, function(y) c(x) > y), 1, sum), dim(as.matrix(x))) + 1
     xout <- t(apply(xtmp, 1, tabulate, nbins=nclass))
   } else {
     xout <- x
