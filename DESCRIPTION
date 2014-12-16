@@ -2,11 +2,12 @@ Package: easyVerification
 Title: Forecast verification metrics for large datasets
 Version: 0.1.0
 Date: 2014-12-15
-Authors@R: "Jonas Bhend <jonas.bhend@meteoswiss.ch> [aut, cre]"
+Authors@R: person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
+    role = c("aut", "cre"))
 Description: This package provides functions to simplify application of
     forecast verification metrcis to large datasets. The forecast metrics are
-    imported from the SpecsVerification package, a few (mostly deterministic)
-    forecast scores are provided with this package. Alternatively, new forecast
+    imported from the SpecsVerification package, and additional forecast metrics
+    are provided with this package. Alternatively, new forecast
     scores can be implemented using the example scores provided in this
     package.
 Depends:
@@ -16,3 +17,4 @@ Suggests:
     testthat
 License: GPL-3
 LazyData: true
+BugReports: https://github.com/jonasbhend/easyVerification/issues

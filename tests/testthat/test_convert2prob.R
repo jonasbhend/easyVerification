@@ -1,4 +1,4 @@
-library(veriWrapper)
+library(easyVerification)
 context('Conversion to probabilities')
 xxx <- array(1:12, c(1,3,4))
 xx <- array(1:12, c(3,4))

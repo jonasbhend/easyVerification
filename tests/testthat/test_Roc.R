@@ -1,4 +1,4 @@
-library(veriWrapper)
+library(easyVerification)
 context('ROC scores')
 
 obs <- diag(1, 4)[-4,]

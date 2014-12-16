@@ -1,4 +1,4 @@
-library(veriWrapper)
+library(easyVerification)
 context('Unwrapping')
 
 xxx <- array(1, c(1,3,5))

@@ -1,4 +1,4 @@
-library(veriWrapper)
+library(easyVerification)
 context('Error scores and skill scores')
 
 fcst <- array(1.5, c(3,10))

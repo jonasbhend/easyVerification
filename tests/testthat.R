@@ -1,4 +1,4 @@
 library(testthat)
-library(veriWrapper)
+library(easyVerification)
 
-test_check("veriWrapper")
+test_check("easyVerification")

@@ -1,4 +1,4 @@
-library(veriWrapper)
+library(easyVerification)
 context('Test correlation')
 
 obs <- rnorm(10)
