@@ -33,13 +33,13 @@ The forecast metrics are imported from the `SpecsVerification` package. Addition
 Additional forecast verification metrics can be added by the user following the examples above.
 
 ## Installation 
-You can get the latest version using `devtools::install_github('jonasbhend/easyVerification')`
+You can get the latest version using `devtools::install_github("jonasbhend/easyVerification")`
 
 ## Getting started
 
 The following example illustrates how to compute the continous ranked probability skill score of an ensemble forecast:
 
-```
+```{r, echo=TRUE}
 
 library(easyVerification)
 
@@ -65,4 +65,4 @@ range(fo.crpss$crpss - c(fo2.crpss$crpss))
 
 ```
 
-To get additional help and examples, try `r help(veriApply)` or the help on any of the functions indicated above (e.g. `r help(EnsMe)`)
+To get additional help and examples, try `help(veriApply)` or the help on any of the functions indicated above (e.g. `help(EnsMe)`)

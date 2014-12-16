@@ -24,34 +24,40 @@ Additional forecast verification metrics can be added by the user following the 
 Installation
 ------------
 
-You can get the latest version using `devtools::install_github('jonasbhend/easyVerification')`
+You can get the latest version using `devtools::install_github("jonasbhend/easyVerification")`
 
 Getting started
 ---------------
 
 The following example illustrates how to compute the continous ranked probability skill score of an ensemble forecast:
 
+``` {.r}
 
-    library(easyVerification)
+library(easyVerification)
+#> Loading required package: SpecsVerification
 
-    ## set up the forecast and observation data structures
-    ## assumption: we have 100 spatial instances, 15 forecast times and 
-    ## 51 ensemble members
-    fcst <- array(rnorm(100*15*51), c(100, 15, 51))
-    obs <- array(rnorm(100*15), c(100, 15))
-    fo.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs)
+## set up the forecast and observation data structures
+## assumption: we have 100 spatial instances, 15 forecast times and 
+## 51 ensemble members
+fcst <- array(rnorm(100*15*51), c(100, 15, 51))
+obs <- array(rnorm(100*15), c(100, 15))
+fo.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs)
 
-    ## if the data were to be organised differently, this has to be indicated
-    ## e.g. ensemble members first, 10x10 spatial domain
-    fcst <- array(aperm(fcst, c(3,2,1)), c(51, 15, 10, 10))
-    obs <- array(t(obs), c(15, 10, 10))
-    fo2.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs, 
-                           ensdim=1, tdim=2)
+## if the data were to be organised differently, this has to be indicated
+## e.g. ensemble members first, 10x10 spatial domain
+fcst <- array(aperm(fcst, c(3,2,1)), c(51, 15, 10, 10))
+obs <- array(t(obs), c(15, 10, 10))
+fo2.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs, 
+                       ensdim=1, tdim=2)
 
-    ## The forecast evaluation metrics are the same, but the 
-    ## data structure is different in the two cases
-    dim(fo.crpss$crpss)
-    dim(fo2.crpss$crpss)
-    range(fo.crpss$crpss - c(fo2.crpss$crpss))
+## The forecast evaluation metrics are the same, but the 
+## data structure is different in the two cases
+dim(fo.crpss$crpss)
+#> [1] 100
+dim(fo2.crpss$crpss)
+#> [1] 10 10
+range(fo.crpss$crpss - c(fo2.crpss$crpss))
+#> [1] 0 0
+```
 
-To get additional help and examples, try or the help on any of the functions indicated above (e.g. )
+To get additional help and examples, try `help(veriApply)` or the help on any of the functions indicated above (e.g. `help(EnsMe)`)
