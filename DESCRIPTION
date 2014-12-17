@@ -22,6 +22,7 @@ Depends:
 Suggests:
     testthat
 License: GPL-3
+Copyright: MeteoSwiss
 LazyData: true
 URL: http://www.meteoswiss.ch
 BugReports: https://github.com/jonasbhend/easyVerification/issues
