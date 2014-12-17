@@ -25,7 +25,6 @@
 #' If no reference forecast is provided (i.e. \code{ncol(x) == nens + 1}), a climatological
 #' forecast is constructed from the \code{n} verifying observations.
 #' 
-#' @export
 veriUnwrap <- function(x, verifun, nens=ncol(x) - 1, prob=NULL, threshold=NULL, ...){
   nn <- ncol(x)
   stopifnot(nn >= nens + 1)

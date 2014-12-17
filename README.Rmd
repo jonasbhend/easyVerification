@@ -43,6 +43,9 @@ The following example illustrates how to compute the continous ranked probabilit
 
 library(easyVerification)
 
+## check out what is included in easyVerification
+ls(pos="package:easyVerification")
+
 ## set up the forecast and observation data structures
 ## assumption: we have 100 spatial instances, 15 forecast times and 
 ## 51 ensemble members
