@@ -5,7 +5,7 @@
 \alias{EnsMess}
 \alias{EnsMsess}
 \alias{EnsRmsess}
-\title{Compute various ensemble mean error metrics}
+\title{Compute various ensemble mean error skill scores}
 \usage{
 EnsErrorss(ens, ens.ref, obs, type)
 
