@@ -33,7 +33,7 @@ The forecast metrics are imported from the `SpecsVerification` package. Addition
 Additional forecast verification metrics can be added by the user following the examples above.
 
 ## Installation 
-You can get the latest version using `devtools::install_github("jonasbhend/easyVerification")`
+You can get the latest version using `devtools::install_github("MeteoSwiss/easyVerification")`
 
 ## Getting started
 

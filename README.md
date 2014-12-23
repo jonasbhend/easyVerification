@@ -27,7 +27,7 @@ The forecast metrics are imported from the `SpecsVerification` package. Addition
 Additional forecast verification metrics can be added by the user following the examples above.
 
 ## Installation 
-You can get the latest version using `devtools::install_github("jonasbhend/easyVerification")`
+You can get the latest version using `devtools::install_github("MeteoSwiss/easyVerification")`
 
 ## Getting started
 
@@ -38,14 +38,19 @@ The following example illustrates how to compute the continous ranked probabilit
 
 library(easyVerification)
 #> Loading required package: SpecsVerification
+#> Loading required package: RCurl
+#> Loading required package: bitops
+#> WARNING: the repository for easyVerification has changed
+#>          and your version may not be up-to-date.
+#>          Please get the latest version of easyVerification using
+#>          install_github("MeteoSwiss/easyVerification")
 
 ## check out what is included in easyVerification
 ls(pos="package:easyVerification")
 #>  [1] "convert2prob" "EnsCorr"      "EnsError"     "EnsErrorss"  
 #>  [5] "EnsMae"       "EnsMaess"     "EnsMe"        "EnsMess"     
 #>  [9] "EnsMse"       "EnsMsess"     "EnsRmse"      "EnsRmsess"   
-#> [13] "EnsRoca"      "EnsRocss"     "EnsSprErr"    "veriApply"   
-#> [17] "veriUnwrap"
+#> [13] "EnsRoca"      "EnsRocss"     "EnsSprErr"    "veriApply"
 
 ## set up the forecast and observation data structures
 ## assumption: we have 100 spatial instances, 15 forecast times and 
