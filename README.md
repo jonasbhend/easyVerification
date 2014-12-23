@@ -27,23 +27,26 @@ The forecast metrics are imported from the `SpecsVerification` package. Addition
 Additional forecast verification metrics can be added by the user following the examples above.
 
 ## Installation 
-You can get the latest version using `devtools::install_github("MeteoSwiss/easyVerification")`
+You can get the latest version using
+
+```r
+devtools::install_github("MeteoSwiss/easyVerification", build_vignettes=TRUE)
+```
 
 ## Getting started
+
+You can find out more about the package and its functionality in the vignette.
+
+
+```r
+vignette('easyVerification')
+```
 
 The following example illustrates how to compute the continous ranked probability skill score of an ensemble forecast:
 
 
 ```r
-
-library(easyVerification)
-#> Loading required package: SpecsVerification
-#> Loading required package: RCurl
-#> Loading required package: bitops
-#> WARNING: the repository for easyVerification has changed
-#>          and your version may not be up-to-date.
-#>          Please get the latest version of easyVerification using
-#>          install_github("MeteoSwiss/easyVerification")
+suppressPackageStartupMessages(library(easyVerification))
 
 ## check out what is included in easyVerification
 ls(pos="package:easyVerification")
@@ -76,4 +79,4 @@ range(fo.crpss$crpss - c(fo2.crpss$crpss))
 #> [1] 0 0
 ```
 
-To get additional help and examples, try `help(veriApply)` or the help on any of the functions indicated above (e.g. `help(EnsMe)`)
+To get additional help and examples please see the vignette `{r, eval=FALSE} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{r, eval=FALSE} help(veriApply)`).
