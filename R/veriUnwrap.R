@@ -54,7 +54,7 @@ veriUnwrap <- function(x, verifun, nens=ncol(x) - 1, prob=NULL, threshold=NULL, 
   is.skill <- substr(verifun, nchar(verifun) - 1, nchar(verifun)) == 'ss'
   if (is.skill){
     if (nn > nens + 1){
-      xref <- x[,-c(1:nens, nn)]
+      xref <- x[,-c(1:nens, nn), drop=F]
     } else {
       xref <- t(array(x[,nn], c(nrow(x), nrow(x))))      
     }
