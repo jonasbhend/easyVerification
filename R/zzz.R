@@ -19,9 +19,9 @@
 .onAttach <- function(...) {
   pkgname <- "easyVerification"
   lib <- system.file(package = pkgname)
-  ver <- packageDescription(pkgname)$Version
-  url <- "https://raw.githubusercontent.com/jonasbhend/easyVerification/master/DESCRIPTION"
-  con <- tryCatch(getURL(url, ssl.verifypeer = FALSE), error = function(er) {
+  ver <- utils::packageDescription(pkgname)$Version
+  desturl <- "https://raw.githubusercontent.com/MeteoSwiss/easyVerification/master/DESCRIPTION"
+  con <- tryCatch(RCurl::getURL(desturl, ssl.verifypeer = FALSE), error = function(er) {
     er <- NULL
     return(er)
   })
@@ -30,10 +30,10 @@
     latest.ver <- package_version(gsub("Version: ", "", b[grep("Version", b)]))
     if (ver < latest.ver) {
       ver.mess1 <- paste("WARNING: Your current version of", pkgname,"is not up-to-date")
-      ver.mess <- paste("Get the latest version", latest.ver, 'using install_github("jonasbhend/easyVerification")')      
+      ver.mess <- paste("Get the latest version", latest.ver, 'using install_github("MeteoSwiss/easyVerification")')      
       packageStartupMessage(ver.mess1)
       packageStartupMessage(ver.mess)
     }
-  }
+  }   
 } 
 # End

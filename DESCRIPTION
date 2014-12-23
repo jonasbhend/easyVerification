@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Forecast verification metrics for large datasets
 Version: 0.1.1
-Date: 2014-12-17
+Date: 2014-12-23
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
     person("Jacopo", "Ripoldi", role="ctb"),
@@ -18,11 +18,12 @@ Description: This package provides functions to simplify application of
     package.
 Depends:
     R (>= 3.0),
-    SpecsVerification
+    SpecsVerification,
+    RCurl
 Suggests:
     testthat
 License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
 URL: http://www.meteoswiss.ch
-BugReports: https://github.com/jonasbhend/easyVerification/issues
+BugReports: https://github.com/MeteoSwiss/easyVerification/issues
