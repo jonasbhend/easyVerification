@@ -52,7 +52,6 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   otdim <- min(nodims, if (ensdim < tdim) tdim - 1 else tdim)
   ## check dimensions
   stopifnot(c(ensdim, tdim) <= nfdims)
-  stopifnot(odims == dim(fcst)[-ensdim])
   stopifnot(odims[-otdim] == dim(fcst)[-c(ensdim, tdim)])
   
   ## check reference forecast
