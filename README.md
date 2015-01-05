@@ -1,12 +1,3 @@
----
-output:
-  md_document:
-    variant: markdown_github
----
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-
 # easyVerification
 
 This package provides functions to simplify application of forecast verification metrics to large datasets of ensemble forecasts. The design goals of `easyVerification` are:
@@ -29,7 +20,7 @@ Additional forecast verification metrics can be added by the user following the 
 ## Installation 
 You can get the latest version using
 
-```r
+```{.r}
 devtools::install_github("MeteoSwiss/easyVerification", build_vignettes=TRUE)
 ```
 
@@ -38,14 +29,14 @@ devtools::install_github("MeteoSwiss/easyVerification", build_vignettes=TRUE)
 You can find out more about the package and its functionality in the vignette.
 
 
-```r
+```{.r}
 vignette('easyVerification')
 ```
 
 The following example illustrates how to compute the continous ranked probability skill score of an ensemble forecast:
 
 
-```r
+```{.r}
 suppressPackageStartupMessages(library(easyVerification))
 
 ## check out what is included in easyVerification
@@ -79,4 +70,4 @@ range(fo.crpss$crpss - c(fo2.crpss$crpss))
 #> [1] 0 0
 ```
 
-To get additional help and examples please see the vignette `{r, eval=FALSE} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{r, eval=FALSE} help(veriApply)`).
+To get additional help and examples please see the vignette `.r vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `.r help(veriApply)`).
