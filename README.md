@@ -70,8 +70,4 @@ range(fo.crpss$crpss - c(fo2.crpss$crpss))
 #> [1] 0 0
 ```
 
-<<<<<<< HEAD
 To get additional help and examples please see the vignette `.r vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `.r help(veriApply)`).
-=======
-To get additional help and examples please see the vignette `{.r} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{.r} help(veriApply)`).
->>>>>>> c47fa17563274d4da4ae6641e3b4b7d1c6697270
