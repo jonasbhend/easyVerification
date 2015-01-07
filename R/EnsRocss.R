@@ -18,14 +18,50 @@
 
 #' Skill score for area under the ROC curve
 #' 
-#' Computes the skill score for the area under the ROC curve
+#' Computes the skill score for the area under the ROC curve compared to an 
+#' arbitrary reference forecast (generally climatological forecast).
 #' 
 #' @param ens n x j matrix of n probability forecasts for j categories
-#' @param ens.ref placeholder for consistency with skill scores in SpecsVerification
-#' @param obs n x j matrix of occurence of n verifying observations in j categories
-#' 
+#' @param ens.ref n x j matrix of reference forecast for j categories
+#' @param obs n x j matrix of occurence of n verifying observations in j 
+#'   categories
+#'   
+#' @return a list with the ROC area skill score for forecast category \code{i} 
+#'   in \code{cati} and the standard deviation of this skill score for category 
+#'   \code{i} in \code{cati.sigma} if a reference forecast with zero association
+#'   is used (see details).
+#'   
+#' @details For the traditional ROC area skill score where the reference 
+#'   forecast has zero association with the observations, the standard error 
+#'   \eqn{\sigma} of the ROC area skill score is given by the following formula 
+#'   after Broecker (2012).
+#'   
+#'   \deqn{\sigma^2 = \frac{1}{12} \left(\frac{1}{N_0} + \frac{1}{N_1} +
+#'   \frac{1}{N_0 N_1} \right)}{\sigma^2 = 1/12 (1/N0 + 1/N1 + 1/(N0 N1))}
+#'   
+#'   Where \eqn{\sigma} is the standard error, \eqn{N_1}{N1} the number of events,
+#'   and \eqn{N_0}{N0} the number of non-events in category \code{i}.
+#'   
+#' @references Br\"ocker, J. (2012). Probability forecasts. Forecast Verification:
+#'   A Practitioner's Guide in Atmospheric Science, Second Edition, 119-139.
+#'   
 #' @export
 EnsRocss <- function(ens, ens.ref, obs){
   roc.area <- EnsRoca(ens, obs)
-  return(lapply(roc.area, function(x) 2*x - 1))
+  if (all(ens.ref == rep(ens.ref[1,], each=nrow(ens.ref)))){
+    roc.out <- lapply(roc.area, function(x) 2*x - 1)   
+    ## compute sigma
+    N1 <- apply(obs, 2, sum)
+    N0 <- nrow(obs) - N1
+    roc.sigma <- sqrt(1/12 * (1/N0 + 1/N1 + 1/(N0*N1)))
+    roc.sigma[N1 == 0] <- NA
+    roc.sigma <- as.list(roc.sigma)
+    names(roc.sigma) <- paste0('cat', seq(along=roc.sigma), '.sigma')
+    roc.out <- c(roc.out, roc.sigma)
+  } else {
+    roc.ref <- EnsRoca(ens.ref, obs)
+    roc.out <- Map(function(x,y) x/y - 1, x=roc.area, y=roc.ref)
+  }
+  
+  return(roc.out)
 }

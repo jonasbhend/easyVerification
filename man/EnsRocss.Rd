@@ -8,11 +8,35 @@ EnsRocss(ens, ens.ref, obs)
 \arguments{
 \item{ens}{n x j matrix of n probability forecasts for j categories}
 
-\item{ens.ref}{placeholder for consistency with skill scores in SpecsVerification}
+\item{ens.ref}{n x j matrix of reference forecast for j categories}
 
-\item{obs}{n x j matrix of occurence of n verifying observations in j categories}
+\item{obs}{n x j matrix of occurence of n verifying observations in j
+  categories}
+}
+\value{
+a list with the ROC area skill score for forecast category \code{i}
+  in \code{cati} and the standard deviation of this skill score for category
+  \code{i} in \code{cati.sigma} if a reference forecast with zero association
+  is used (see details).
 }
 \description{
-Computes the skill score for the area under the ROC curve
+Computes the skill score for the area under the ROC curve compared to an
+arbitrary reference forecast (generally climatological forecast).
+}
+\details{
+For the traditional ROC area skill score where the reference
+  forecast has zero association with the observations, the standard error
+  \eqn{\sigma} of the ROC area skill score is given by the following formula
+  after Broecker (2012).
+
+  \deqn{\sigma^2 = \frac{1}{12} \left(\frac{1}{N_0} + \frac{1}{N_1} +
+  \frac{1}{N_0 N_1} \right)}{\sigma^2 = 1/12 (1/N0 + 1/N1 + 1/(N0 N1))}
+
+  Where \eqn{\sigma} is the standard error, \eqn{N_1}{N1} the number of events,
+  and \eqn{N_0}{N0} the number of non-events in category \code{i}.
+}
+\references{
+Br\"ocker, J. (2012). Probability forecasts. Forecast Verification:
+  A Practitioner's Guide in Atmospheric Science, Second Edition, 119-139.
 }
 
