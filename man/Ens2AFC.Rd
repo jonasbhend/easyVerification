@@ -6,7 +6,7 @@
 \usage{
 Ens2AFC(ens, obs, ...)
 
-rank.ensembles(fcst)
+rank.ensembles(ens)
 }
 \arguments{
 \item{ens}{n x m matrix of n forecasts for m ensemble members}

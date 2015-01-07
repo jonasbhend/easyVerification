@@ -10,10 +10,12 @@ The forecast metrics are imported from the `SpecsVerification` package. Addition
 
 1. Mean error (`EnsMe`), mean absolute error(`EnsMae`), mean squared error (`EnsMse`), and root mean squared error (`EnsRmse`) of the ensemble mean and their skill scores (e.g. `EnsRmsess`)
 2. Correlation with the ensemble mean (`EnsCorr`)
-3. Spread to error ratio (`EnsSprErr`)
-4. Are under the ROC curve (`EnsRoca`) and its skill score (`EnsRocss`)
+3. Spread to error ratio (`EnsSprErr` and `FairSprErr`)
+4. Area under the ROC curve (`EnsRoca`) and its skill score (`EnsRocss`)
 5. Fair (`FairRps`) and standard (`EnsRps`) rank probability scores and skill scores (e.g. `FairRpss`)
 6. Fair (`FairCrps`) and standard (`EnsCrps`) continuous ranked probability scores and skill scores (e.g. `FairCrpss`)
+7. Dressed scores (`DressIgn`, `DressCrps`) and their skill scores (`DressIgnSs`, `DressCrpss`) with default ensemble dressing method ("silverman")
+8. The generalized discrimination score for ensembles (`Ens2AFC`)
 
 Additional forecast verification metrics can be added by the user following the examples above.
 
@@ -41,10 +43,11 @@ suppressPackageStartupMessages(library(easyVerification))
 
 ## check out what is included in easyVerification
 ls(pos="package:easyVerification")
-#>  [1] "convert2prob" "EnsCorr"      "EnsError"     "EnsErrorss"  
-#>  [5] "EnsMae"       "EnsMaess"     "EnsMe"        "EnsMess"     
-#>  [9] "EnsMse"       "EnsMsess"     "EnsRmse"      "EnsRmsess"   
-#> [13] "EnsRoca"      "EnsRocss"     "EnsSprErr"    "veriApply"
+#>  [1] "convert2prob" "Ens2AFC"      "EnsCorr"      "EnsError"    
+#>  [5] "EnsErrorss"   "EnsMae"       "EnsMaess"     "EnsMe"       
+#>  [9] "EnsMess"      "EnsMse"       "EnsMsess"     "EnsRmse"     
+#> [13] "EnsRmsess"    "EnsRoca"      "EnsRocss"     "EnsSprErr"   
+#> [17] "FairSprErr"   "veriApply"
 
 ## set up the forecast and observation data structures
 ## assumption: we have 100 spatial instances, 15 forecast times and 

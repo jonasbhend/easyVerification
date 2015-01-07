@@ -1,6 +1,16 @@
+# easyVerification 0.1.4
+
+* Support for dressed metrics from `SpecsVerification`. Only the standard dressing method ("silverman") is supported so far.
+
+* Significance for `EnsRocss`
+
+* `FairSprErr` Fair spread error ratio
+
+* `EnsRocss` allow for arbitrary reference forecasts in ROC area skill score (no significance for reference forecasts with ROC area != 0.5)
+
 # easyVerification 0.1.3
 
-* Added the generalized discrimination score for ensembles.
+* `Ens2AFC` Added the generalized discrimination score for ensembles.
 
 # easyVerification 0.1.2
 
