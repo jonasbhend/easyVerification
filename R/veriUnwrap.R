@@ -46,25 +46,37 @@
 veriUnwrap <- function(x, verifun, nens=ncol(x) - 1, prob=NULL, threshold=NULL, ...){
   nn <- ncol(x)
   stopifnot(nn >= nens + 1)
-  vfun <- get(verifun)
+  vfun <- match.fun(verifun)
   ## mask missing values
   xmask <- apply(!is.na(x), 1, all)
   x <- x[xmask,]
   ## check whether this is a skill score or a score
-  is.skill <- substr(verifun, nchar(verifun) - 1, nchar(verifun)) == 'ss'
+  is.skill <- tolower(substr(verifun, nchar(verifun) - 1, nchar(verifun))) == 'ss'
+  is.dress <- tolower(substr(verifun, 1, 5)) == 'dress'
   if (is.skill){
     if (nn > nens + 1){
       xref <- x[,-c(1:nens, nn), drop=F]
     } else {
       xref <- t(array(x[,nn], c(nrow(x), nrow(x))))      
     }
-    out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
-                convert2prob(xref, prob=prob, threshold=threshold),
-                convert2prob(x[,nn], prob=prob, threshold=threshold), ...)
+    if (is.dress){
+      out <- vfun(DressEnsemble(x[,1:nens]),
+                  DressEnsemble(xref),
+                  x[,nn])
+    } else {
+      out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
+                  convert2prob(xref, prob=prob, threshold=threshold),
+                  convert2prob(x[,nn], prob=prob, threshold=threshold), ...)      
+    }
   } else {
     stopifnot(nn == nens + 1)
-    out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
-                convert2prob(x[,nn], prob=prob, threshold=threshold), ...)    
+    if (is.dress){
+      out <- vfun(DressEnsemble(x[,1:nens]),
+                  x[,nn])
+    } else {
+      out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
+                  convert2prob(x[,nn], prob=prob, threshold=threshold), ...)          
+    }
   }
 
   ## check whether output has to be expanded with NA
