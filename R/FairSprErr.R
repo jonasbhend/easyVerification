@@ -18,22 +18,22 @@
 
 #' Fair spread-error ratio
 #' 
-#' Modular function that computes the spread to error ratio (SPR) for 
-#' probabilistic forecasts - not unlike the functions in SpecsVerification. SPR 
-#' > 1 indicates overdispersion (underconfidence), whereas SPR < indicates 
-#' overconfidence in the forecasts.
+#' Modular function that computes the spread to error ratio (\code{SPR}) for 
+#' probabilistic forecasts - not unlike the functions in SpecsVerification. 
+#' \code{SPR > 1} indicates overdispersion (underconfidence), whereas \code{SPR 
+#' < 1} indicates overconfidence in the forecasts.
 #' 
 #' @param ens n x k matrix of n forecasts for k ensemble members
 #' @param obs vector with n verifying observations
 #'   
 #' @details Here we define the spread-error rate as the square root of the ratio
-#'   of mean ensemble variance to the mean squared error of the ensemble mean
-#'   with the verifying observations. We inflate the intra ensemble sample
+#'   of mean ensemble variance to the mean squared error of the ensemble mean 
+#'   with the verifying observations. We inflate the intra ensemble sample 
 #'   variance to account for the finite ensemble size as in Weigel (2011).
 #'   
 #'   
-#' @references Weigel, A. P. (2012). Ensemble forecasts. Forecast Verification:
-#'   A Practitioner’s Guide in Atmospheric Science, Second Edition, 141-166.
+#' @references Weigel, A.P. (2012). Ensemble forecasts. Forecast Verification: A
+#'   Practitioner's Guide in Atmospheric Science, Second Edition, 141-166.
 #'   
 #' @export
 FairSprErr <- function(ens, obs){

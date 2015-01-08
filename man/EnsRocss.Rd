@@ -29,14 +29,18 @@ For the traditional ROC area skill score where the reference
   \eqn{\sigma} of the ROC area skill score is given by the following formula
   after Broecker (2012).
 
-  \deqn{\sigma^2 = \frac{1}{12} \left(\frac{1}{N_0} + \frac{1}{N_1} +
-  \frac{1}{N_0 N_1} \right)}{\sigma^2 = 1/12 (1/N0 + 1/N1 + 1/(N0 N1))}
+  \deqn{\sigma^2 = \frac{1}{3} \left(\frac{1}{N_0} + \frac{1}{N_1} +
+  \frac{1}{N_0 N_1} \right)}{\sigma^2 = 1/3 (1/N0 + 1/N1 + 1/(N0 N1))}
 
-  Where \eqn{\sigma} is the standard error, \eqn{N_1}{N1} the number of events,
-  and \eqn{N_0}{N0} the number of non-events in category \code{i}.
+  Where \eqn{\sigma} is the standard error, \eqn{N_1}{N1} the number of
+  events, and \eqn{N_0}{N0} the number of non-events in category \code{i}.
+  Please note the factor 2 difference to the formulation of the standard
+  error for the ROC area in the original manuscript due to the conversion of
+  the ROC area to the ROC area skill score.
 }
 \references{
-Br\"ocker, J. (2012). Probability forecasts. Forecast Verification:
-  A Practitioner's Guide in Atmospheric Science, Second Edition, 119-139.
+Br\"ocker, J. (2012). Probability forecasts. Forecast
+  Verification: A Practitioner's Guide in Atmospheric Science, Second
+  Edition, 119-139.
 }
 
