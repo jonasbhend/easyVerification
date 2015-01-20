@@ -53,6 +53,7 @@ convert2prob <- function(x, prob=NULL, threshold=NULL){
     #xtmp <- array(findInterval(x, threshold) + 1, dim(as.matrix(x)))
     xtmp <- array(apply(sapply(threshold, function(y) c(x) > y), 1, sum), dim(as.matrix(x))) + 1
     xout <- t(apply(xtmp, 1, tabulate, nbins=nclass))
+    xout[apply(as.matrix(is.na(x)), 1, any),] <- NA
   } else {
     xout <- x
   }

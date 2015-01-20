@@ -1,3 +1,7 @@
+## easyVerification 0.1.4.2
+
+* Fixed bug in missing value treatment with `convert2prob`. This will not affect functions called using `veriApply` as of yet as scores in `veriApply` are only computed for complete forecast and observation pairs
+
 ## easyVerification 0.1.4.1
 
 * Bug fix (scaling) of standard error provided in `EnsRocss`
