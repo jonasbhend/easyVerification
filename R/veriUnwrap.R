@@ -18,35 +18,58 @@
 
 #' Unwrap arguments and hand over to function
 #' 
-#' decomposes input argument into forecast and verifying observations
-#' and hands these over to the function provided
+#' decomposes input argument into forecast and verifying observations and hands 
+#' these over to the function provided
 #' 
-#' @param x n x k + 1 matrix with n forecasts of k ensemble members
-#' plus the verifying observations
+#' @param x n x k + 1 matrix with n forecasts of k ensemble members plus the 
+#'   verifying observations
 #' @param verifun character string with function name to be executed
-#' @param nens number of ensemble members in forecast (see details)
-#' @param prob probability threshold for conversion of forecasts to 
-#' probability forecasts as in \code{\link{convert2prob}}
-#' @param threshold absolute threshold for conversion of forecasts to 
-#' probability forecasts as in \code{\link{convert2prob}}
+#' @param nind named vector with number of ensemble members, ensemble members of
+#'   reference forecasts, observations (defaults to 1), probability or absolute 
+#'   thresholds (see details)
 #' @param ... additional arguments passed on to \code{verifun}
-#' 
-#' @details
-#' Only forecasts with non-missing observation and complete ensembles are
-#' computed. All other forecasts are set to missing. For aggregate metrics
-#' (e.g. skill scores) the metric is computed over non-missing observation/forecast
-#' pairs only.
-#' 
-#' For computation of skill scores, reference forecasts can be provided. That is, the
-#' first \code{nens} columns of \code{x} contain the forecasts, the \code{(nens + 1):(ncol(x) - 1)}
-#' following columns contain the reference forecast, and the final column contains the observations.
-#' If no reference forecast is provided (i.e. \code{ncol(x) == nens + 1}), a climatological
-#' forecast is constructed from the \code{n} verifying observations.
-#' 
-veriUnwrap <- function(x, verifun, nens=ncol(x) - 1, prob=NULL, threshold=NULL, ...){
-  nn <- ncol(x)
-  stopifnot(nn >= nens + 1)
+#'   
+#' @details Only forecasts with non-missing observation and complete ensembles 
+#'   are computed. All other forecasts are set to missing. For aggregate metrics
+#'   (e.g. skill scores) the metric is computed over non-missing 
+#'   observation/forecast pairs only.
+#'   
+#'   For computation of skill scores, reference forecasts can be provided. That 
+#'   is, the first \code{nens} columns of \code{x} contain the forecasts, the 
+#'   \code{(nens + 1):(ncol(x) - 1)} following columns contain the reference 
+#'   forecast, and the final column contains the observations. If no reference 
+#'   forecast is provided (i.e. \code{ncol(x) == nens + 1}), a climatological 
+#'   forecast is constructed from the \code{n} verifying observations.
+#'   
+#'   The elements of vector \code{nind} have to be named with \code{nens}
+#'   containing the number of ensemble members, \code{nref} the number of
+#'   ensemble members in the reference forecast for skill scores, \code{nobs}
+#'   the number of observations (only one supported), \code{nprob} the number of
+#'   probability thresholds, and \code{nthresh} the number of absolute threshold
+#'   for conversion of continuous forecasts to category forecasts.
+#'   
+veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, nprob=0, nthresh=0), ...){
+  nens <- nind['nens']
+  nref <- nind['nref']
+  nobs <- nind['nobs']
+  nprob <- nind['nprob']
+  nthresh <- nind['nthresh']
+  stopifnot(ncol(x) >= nens + 1)
   vfun <- match.fun(verifun)
+  ## extract prob or thresh
+  if (nprob > 0){
+    prob <- (x[,seq(nens + nref + nobs + 1,ncol(x))])[1:nprob]
+  } else {
+    prob <- NULL
+  }
+  if (nthresh > 0){
+    threshold <- (x[,seq(nens + nref + nobs + 1, ncol(x))])[nprob + 1:nthresh]
+  } else {
+    threshold <- NULL
+  }
+  ## reset x
+  x <- x[,seq(1,nens + nref + nobs)]
+  nn <- ncol(x)  
   ## mask missing values
   xmask <- apply(!is.na(x), 1, all)
   x <- x[xmask,]

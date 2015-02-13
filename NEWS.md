@@ -1,3 +1,8 @@
+## easyVerification 0.1.5
+
+* probability and absolute thresholds for conversion of continuous forecasts to category forecasts can now be supplied to be forecast specific (e.g. different thresholds for different lead times and spatial locations)
+* bug fix in `veriApply` with minimal forecast, observation examples
+
 ## easyVerification 0.1.4.2
 
 * Fixed bug in missing value treatment with `convert2prob`. This will not affect functions called using `veriApply` as of yet as scores in `veriApply` are only computed for complete forecast and observation pairs

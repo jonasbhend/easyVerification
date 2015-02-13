@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Forecast verification metrics for large datasets
-Version: 0.1.4.2
-Date: 2015-01-20
+Version: 0.1.5
+Date: 2015-02-13
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
     person("Jacopo", "Ripoldi", role="ctb"),

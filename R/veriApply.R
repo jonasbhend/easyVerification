@@ -18,17 +18,32 @@
 
 #' Apply verification metrics to large datasets
 #' 
-#' @param verifun Name of function to compute verification metric (score, skill score)
+#' @param verifun Name of function to compute verification metric (score, skill 
+#'   score)
 #' @param fcst array of forecast values (at least 2-dimensional)
 #' @param obs array or vector of verifying observations
-#' @param fcst.ref array of forecast values for the reference forecast (skill scores only)
+#' @param fcst.ref array of forecast values for the reference forecast (skill 
+#'   scores only)
 #' @param tdim index of dimension with the different forecasts
 #' @param ensdim index of dimension with the different ensemble members
-#' @param prob probability threshold for category forecasts
-#' @param threshold absolute threshold for category forecasts
+#' @param prob probability threshold for category forecasts (see details)
+#' @param threshold absolute threshold for category forecasts (see details)
 #' @param na.rm logical, should incomplete forecasts be used?
 #' @param ... additional arguments passed to \code{verifun}
-#' 
+#'   
+#' @details The probability and absolute thresholds can be supplied in various 
+#'   formats. If a vector of values is supplied, the same threshold is applied 
+#'   to all forecasts (e.g. lead times, spatial locations). If the thresholds 
+#'   are supplied as a matrix, the number of rows has to correspond to the 
+#'   number of forecasts (i.e. same length as 
+#'   \code{length(fcst)/prod(dim(fcst)[c(tdim, ensdim)])}). Finally, the 
+#'   thresholds can also be supplied with the dimensionality corresponding to 
+#'   the \code{obs} array. In this case the dimension of the array where in 
+#'   \code{obs} the forecast instances are stored holds the thresholds to be 
+#'   applied to convert the continuous forecasts to category forecasts.
+#'   Consequently, this dimension can be different from the dimension in
+#'   \code{obs}.
+#'   
 #' @examples
 #' obs <- array(rnorm(1000*30), c(1000,30))
 #' fcst <- array(rnorm(1000*30*50), c(1000, 30, 50)) + 0.2*as.vector(obs)
@@ -53,6 +68,8 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   ## check dimensions
   stopifnot(c(ensdim, tdim) <= nfdims)
   stopifnot(odims[-otdim] == dim(fcst)[-c(ensdim, tdim)])
+  ## check that only prob or threshold are supplied
+  stopifnot(is.null(prob) | is.null(threshold))
   
   ## check reference forecast
   if (!is.null(fcst.ref)) stopifnot(dim(fcst)[-ensdim] == dim(fcst.ref)[-ensdim])
@@ -72,13 +89,49 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   ntim <- head(tail(dim(fcst), 2), 1)
   nrest <- length(obs)/ntim
   
-  ## run the function
-  xall <- array(c(fcst, fcst.ref, obs), c(nrest, ntim, nens+nref+1))
+  ## dimensions of prob or threshold
+  if (is.null(prob)){
+    nprob <- 0
+  } else {
+    if (is.vector(prob)){
+      prob <- t(prob)[rep(1,nrest),]
+    } else if (length(dim(prob)) == nodims){
+      prob <- aperm(prob, c(setdiff(1:nodims, otdim), otdim))
+    }
+    stopifnot(length(prob)%%nrest == 0)
+    prob <- array(prob, c(nrest, length(prob)/nrest))
+    nprob <- ncol(prob)
+  }
+  if (is.null(threshold)){
+    nthresh <- 0
+  } else {
+    if (is.vector(threshold)){
+      threshold <- t(threshold)[rep(1,nrest),]
+    } else if (length(dim(threshold)) == nodims){
+      threshold <- aperm(threshold, c(setdiff(1:nodims, otdim), otdim))
+    }
+    stopifnot(length(threshold)%%nrest == 0)
+    threshold <- array(threshold, c(nrest, length(threshold)/nrest))
+    nthresh <- ncol(threshold)
+  }
+  
+  ## figure out how many 3rd dimensions are needed to write prob/thresh
+  nconv <- ceiling((nprob + nthresh)/ntim)
+  
+  ## fill in xall with additional obs
+  xall <- array(c(fcst, fcst.ref, obs, rep(obs*NA, nconv)), c(nrest, ntim, nens+nref+1+nconv))
+  if (nconv > 0){
+    probthresh <- rbind(prob, threshold)
+    for (j in 1:nconv){
+      ind <- seq((j - 1)*ntim + 1, min(ntim*j, ncol(probthresh))) - (j-1)*ntim
+      xall[,ind,nens+nref+1+j] <- probthresh[,ind]
+    }
+  }
   ## mask missing values
   if (na.rm) {
-    xmask <- apply(apply(!is.na(xall), 1:2, all), 1, any)
+    xmask <- apply(apply(!is.na(xall[,,1:(nens+nref+1),drop=F]), 1:2, all), 1, any)
   } else {
-    xmask <- apply(!is.na(xall), 1, all)
+    xmask <- apply(!is.na(xall[,,1:(nens+nref+1),drop=F]), 1, all)
   }
   ## check whether there are complete forecast/observation pairs at all
   stopifnot(any(xmask))
@@ -94,8 +147,8 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
                        MARGIN=1, 
                        FUN=veriUnwrap, 
                        verifun=verifun, 
-                       nens=nens,
-                       prob=prob, threshold=threshold, ...))
+                       nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
+                       ...))
   
   ## reformat the output by converting to list
   if (is.list(out)){

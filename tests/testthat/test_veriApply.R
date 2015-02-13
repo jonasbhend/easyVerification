@@ -46,3 +46,20 @@ test_that('Reference forecasts for skill scores', {
   expect_true(veriApply('EnsCrpss', xx, x)$crpss < veriApply('EnsCrpss', xx, x, fcst.ref=0*xx)$crpss)
   expect_equal(veriApply('EnsCrpss', xx, x)$crpss, veriApply('EnsCrpss', xx, x, fcst.ref=t(array(x, rep(length(x), 2))))$crpss)
 })
+
+test_that("Multidimensional probability and absolute thresholds", {
+  fcst <- array(rnorm(5*3*10*5), c(5,3,10,5))
+  obs <- array(rnorm(5*3*10), c(5,3,10))
+  signal <- runif(5*3, min=3, max=9)
+  prob <- array(rep(1:2/3, each=5*3), c(5,3,2))
+  expect_equal(veriApply('EnsRpss', fcst=fcst, obs=obs, prob=1:2/3),
+               veriApply('EnsRpss', fcst=fcst, obs=obs, prob=prob))
+  expect_equal(veriApply('EnsRpss', fcst=fcst, obs=obs, prob=1:2/3),
+               veriApply('EnsRpss', fcst=fcst, obs=obs, prob=matrix(prob, 5*3, 2)))
+  expect_equal(veriApply('EnsRpss', fcst=aperm(fcst, c(1,3,2,4)), 
+                         obs=aperm(obs, c(1,3,2)), prob=1:2/3, tdim=2),
+               veriApply('EnsRpss', fcst=aperm(fcst, c(1,3,2,4)), 
+                         obs=aperm(obs, c(1,3,2)), prob=aperm(prob, c(1,3,2)), tdim=2))
+  expect_equal(veriApply('EnsRpss', fcst=fcst, obs=obs, threshold=1),
+               veriApply('EnsRpss', fcst=fcst + signal, obs=obs+signal, threshold=as.matrix(signal) + 1))
+})

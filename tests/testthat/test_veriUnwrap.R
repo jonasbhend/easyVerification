@@ -18,3 +18,4 @@ test_that("returned value is correct", {
   expect_is(veriUnwrap(xx, 'FairCrps'), mode(FairCrps(xx[,-ncol(xx)], xx[,ncol(xx)])))
   expect_equal(veriUnwrap(xx, 'EnsMe'), 0)
 })
+
