@@ -38,4 +38,7 @@ fcst <- array(rnorm(100), c(10,10))
 EnsError(fcst, obs, type='me')
 EnsMe(fcst, obs)
 }
+\seealso{
+\code{\link{veriApply}}, \code{\link{EnsErrorss}}
+}
 

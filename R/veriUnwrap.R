@@ -48,6 +48,8 @@
 #'   probability thresholds, and \code{nthresh} the number of absolute threshold
 #'   for conversion of continuous forecasts to category forecasts.
 #'   
+#' @seealso \code{\link{veriApply}}
+#'   
 veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, nprob=0, nthresh=0), ...){
   nens <- nind['nens']
   nref <- nind['nref']

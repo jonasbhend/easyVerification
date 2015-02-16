@@ -49,6 +49,15 @@
 #'   Verification: A Practitioner's Guide in Atmospheric Science, Second 
 #'   Edition, 119-139.
 #'   
+#' @examples
+#' fcst <- array(rnorm(100*50), c(100,50))
+#' obs <- rnorm(100)
+#' 
+#' ## compute ROC score for forecasts of x <= 0, 0 <= x < 1, and x > 1
+#' veriApply("EnsRocss", fcst, obs, threshold=c(0,1))
+#'   
+#' @seealso \code{\link{veriApply}}, \code{\link{EnsRoca}}
+#'   
 #' @export
 EnsRocss <- function(ens, ens.ref, obs){
   roc.area <- EnsRoca(ens, obs)

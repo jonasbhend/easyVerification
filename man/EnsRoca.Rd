@@ -14,4 +14,14 @@ EnsRoca(ens, obs)
 \description{
 Computes the area under the ROC curve given the observations
 }
+\examples{
+fcst <- array(rnorm(100*50), c(100,50))
+obs <- rnorm(100)
+
+## compute ROC area for tercile forecasts using veriApply
+veriApply("EnsRoca", fcst=fcst, obs=obs, prob=1:2/3)
+}
+\seealso{
+\code{\link{veriApply}}, \code{\link{EnsRocss}}
+}
 

@@ -32,4 +32,19 @@ EnsRmsess(ens, ens.ref, obs)
 \code{EnsMsess} the mean squared error, and \code{EnsRmsess} the square root of
 the mean squared error (for consistency with the veri package).
 }
+\examples{
+signal <- rnorm(100)
+fcst <- array(rnorm(100*50), c(100,50)) + signal
+fcst2 <- array(rnorm(100*50), c(100,50)) + 2*signal
+obs <- rnorm(100) + signal
+
+## compute skill score against reference forecast directly
+EnsErrorss(ens=fcst, ens.ref=fcst2, obs=obs, type='rmse')
+
+## compute skill score using veriApply
+veriApply("EnsRmsess", fcst=fcst, obs=obs, fcst.ref=fcst2)
+}
+\seealso{
+\code{\link{veriApply}}, \code{\link{EnsError}}
+}
 

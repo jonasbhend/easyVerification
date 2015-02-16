@@ -18,5 +18,11 @@ Computes the ensemble mean correlation (Pearson) with the veryfing observations
 obs <- rnorm(10)
 fcst <- array(rnorm(30), c(10,3)) + obs
 EnsCorr(fcst, obs)
+
+## compute correlation using veriApply
+veriApply("EnsCorr", fcst, obs)
+}
+\seealso{
+\code{\link{veriApply}}
 }
 

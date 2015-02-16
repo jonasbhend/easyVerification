@@ -18,6 +18,12 @@
 
 #' Apply verification metrics to large datasets
 #' 
+#' This wrapper applies verification metrics to arrays of forecast ensembles and
+#' verifying observations. Various formats array-based formats are supported.
+#' Additionally, continuous forecasts (and observations) are transformed to
+#' category forecasts using user-defined absolute thresholds or percentiles of
+#' the long-term climatology (see details).
+#' 
 #' @param verifun Name of function to compute verification metric (score, skill 
 #'   score)
 #' @param fcst array of forecast values (at least 2-dimensional)
@@ -40,14 +46,21 @@
 #'   thresholds can also be supplied with the dimensionality corresponding to 
 #'   the \code{obs} array. In this case the dimension of the array where in 
 #'   \code{obs} the forecast instances are stored holds the thresholds to be 
-#'   applied to convert the continuous forecasts to category forecasts.
-#'   Consequently, this dimension can be different from the dimension in
+#'   applied to convert the continuous forecasts to category forecasts. 
+#'   Consequently, this dimension can be different from the dimension in 
 #'   \code{obs}.
 #'   
 #' @examples
 #' obs <- array(rnorm(1000*30), c(1000,30))
 #' fcst <- array(rnorm(1000*30*50), c(1000, 30, 50)) + 0.2*as.vector(obs)
 #' f.me <- veriApply('EnsMe', fcst, obs)
+#' 
+#' ## find more examples and instructions in the vignette
+#' \dontrun{
+#' devtools::install_github("MeteoSwiss/easyVerification", build_vignettes=TRUE)
+#' library('easyVerification')
+#' vignette('easyVerification')
+#' }
 #' 
 #' 
 #' @keywords utilities

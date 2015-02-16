@@ -23,8 +23,22 @@ Here we define the spread-error rate as the square root of the ratio
   with the verifying observations. We inflate the intra ensemble sample
   variance to account for the finite ensemble size as in Weigel (2011).
 }
+\examples{
+fcst <- array(rnorm(100*50, sd=0.8), c(100,50))
+obs <- rnorm(100)
+FairSprErr(fcst,obs)
+
+## compute spread to error ratio using veriApply
+veriApply('FairSprErr', fcst=fcst, obs=obs)
+
+## compare with 'unfair' spread to error ratio
+veriApply("EnsSprErr", fcst=fcst, obs=obs)
+}
 \references{
 Weigel, A.P. (2012). Ensemble forecasts. Forecast Verification: A
   Practitioner's Guide in Atmospheric Science, Second Edition, 141-166.
+}
+\seealso{
+\code{\link{veriApply}}, \code{\link{FairSprErr}}
 }
 

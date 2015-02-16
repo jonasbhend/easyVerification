@@ -38,6 +38,8 @@
 #' EnsError(fcst, obs, type='me')
 #' EnsMe(fcst, obs)
 #' 
+#' @seealso \code{\link{veriApply}}, \code{\link{EnsErrorss}}
+#' 
 #' @export
 EnsError <- function(ens, obs, type){
   stopifnot(is.matrix(ens), is.vector(obs), length(obs) == nrow(ens))

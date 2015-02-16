@@ -32,7 +32,11 @@ scores only)}
 \item{...}{additional arguments passed to \code{verifun}}
 }
 \description{
-Apply verification metrics to large datasets
+This wrapper applies verification metrics to arrays of forecast ensembles and
+verifying observations. Various formats array-based formats are supported.
+Additionally, continuous forecasts (and observations) are transformed to
+category forecasts using user-defined absolute thresholds or percentiles of
+the long-term climatology (see details).
 }
 \details{
 The probability and absolute thresholds can be supplied in various
@@ -52,6 +56,13 @@ The probability and absolute thresholds can be supplied in various
 obs <- array(rnorm(1000*30), c(1000,30))
 fcst <- array(rnorm(1000*30*50), c(1000, 30, 50)) + 0.2*as.vector(obs)
 f.me <- veriApply('EnsMe', fcst, obs)
+
+## find more examples and instructions in the vignette
+\dontrun{
+devtools::install_github("MeteoSwiss/easyVerification", build_vignettes=TRUE)
+library('easyVerification')
+vignette('easyVerification')
+}
 }
 \keyword{utilities}
 

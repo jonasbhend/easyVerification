@@ -1,3 +1,7 @@
+## easyVerification 0.1.5.1
+
+* updated documentation for elementary skill functions
+
 ## easyVerification 0.1.5
 
 * probability and absolute thresholds for conversion of continuous forecasts to category forecasts can now be supplied to be forecast specific (e.g. different thresholds for different lead times and spatial locations)

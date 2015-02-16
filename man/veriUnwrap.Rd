@@ -43,4 +43,7 @@ Only forecasts with non-missing observation and complete ensembles
   probability thresholds, and \code{nthresh} the number of absolute threshold
   for conversion of continuous forecasts to category forecasts.
 }
+\seealso{
+\code{\link{veriApply}}
+}
 

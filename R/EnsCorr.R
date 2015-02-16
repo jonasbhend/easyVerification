@@ -28,6 +28,11 @@
 #' fcst <- array(rnorm(30), c(10,3)) + obs
 #' EnsCorr(fcst, obs)
 #' 
+#' ## compute correlation using veriApply
+#' veriApply("EnsCorr", fcst, obs)
+#' 
+#' @seealso \code{\link{veriApply}}
+#' 
 #' @export
 EnsCorr <- function(ens, obs){
   stopifnot(is.matrix(ens), is.vector(obs), length(obs) == nrow(ens))

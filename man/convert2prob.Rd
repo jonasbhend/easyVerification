@@ -28,5 +28,20 @@ of the full distribution (e.g. temperature above/below the median). If
 \code{threshold} is set, the classes are defined based on the absolute value
 (e.g. temperature above/below 13 deg. C). Multiple classes are supported.
 }
+\examples{
+fcst <- array(rnorm(100*50), c(100, 50))
+obs <- rnorm(100)
+
+## convert to tercile forecasts (only display first forecast and obs)
+convert2prob(fcst, prob=1:2/3)[1,]
+convert2prob(obs, prob=1:2/3)[1,]
+
+## convert to category forecasts (smaller and larger than 1)
+convert2prob(fcst, threshold=1)[1,]
+convert2prob(obs, threshold=1)[1,]
+}
+\seealso{
+\code{\link{veriApply}}
+}
 \keyword{utilities}
 

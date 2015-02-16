@@ -39,9 +39,19 @@ For the traditional ROC area skill score where the reference
   error for the ROC area in the original manuscript due to the conversion of
   the ROC area to the ROC area skill score.
 }
+\examples{
+fcst <- array(rnorm(100*50), c(100,50))
+obs <- rnorm(100)
+
+## compute ROC score for forecasts of x <= 0, 0 <= x < 1, and x > 1
+veriApply("EnsRocss", fcst, obs, threshold=c(0,1))
+}
 \references{
 Br\"ocker, J. (2012). Probability forecasts. Forecast
   Verification: A Practitioner's Guide in Atmospheric Science, Second
   Edition, 119-139.
+}
+\seealso{
+\code{\link{veriApply}}, \code{\link{EnsRoca}}
 }
 

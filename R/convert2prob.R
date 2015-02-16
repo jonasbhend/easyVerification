@@ -34,6 +34,20 @@
 #' Matrix of occurences per class (i.e. the number of ensemble members per class,
 #' or an indicator for the observations)
 #' 
+#' @examples
+#' fcst <- array(rnorm(100*50), c(100, 50))
+#' obs <- rnorm(100)
+#' 
+#' ## convert to tercile forecasts (only display first forecast and obs)
+#' convert2prob(fcst, prob=1:2/3)[1,]
+#' convert2prob(obs, prob=1:2/3)[1,]
+#' 
+#' ## convert to category forecasts (smaller and larger than 1)
+#' convert2prob(fcst, threshold=1)[1,]
+#' convert2prob(obs, threshold=1)[1,]
+#' 
+#' @seealso \code{\link{veriApply}}
+#' 
 #' @keywords utilities
 #' @export
 convert2prob <- function(x, prob=NULL, threshold=NULL){

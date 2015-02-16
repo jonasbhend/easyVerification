@@ -34,4 +34,7 @@ Weigel, A.P., and S.J. Mason (2011). The Generalized Discrimination Score for
 Ensemble Forecasts. Monthly Weather Review, 139(9), 3069-3074.
 doi:10.1175/MWR-D-10-05069.1
 }
+\seealso{
+\code{\link{veriApply}}
+}
 

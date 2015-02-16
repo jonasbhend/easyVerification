@@ -43,6 +43,7 @@
 #' ens <- array(rnorm(10*30), c(10,30)) + signal
 #' Ens2AFC(ens, obs)
 #' 
+#' @seealso \code{\link{veriApply}}
 #' 
 #' @export
 Ens2AFC <- function(ens, obs, ...){

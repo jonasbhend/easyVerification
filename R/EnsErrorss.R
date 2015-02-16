@@ -31,6 +31,21 @@
 #' @param obs n verifying observations 
 #' @param type specifying what error metric to compute, one of [me, mae, mse, rmse]
 #' 
+#' @examples
+#' signal <- rnorm(100)
+#' fcst <- array(rnorm(100*50), c(100,50)) + signal
+#' fcst2 <- array(rnorm(100*50), c(100,50)) + 2*signal
+#' obs <- rnorm(100) + signal
+#' 
+#' ## compute skill score against reference forecast directly
+#' EnsErrorss(ens=fcst, ens.ref=fcst2, obs=obs, type='rmse')
+#' 
+#' ## compute skill score using veriApply
+#' veriApply("EnsRmsess", fcst=fcst, obs=obs, fcst.ref=fcst2)
+#' 
+#' 
+#' @seealso \code{\link{veriApply}}, \code{\link{EnsError}}
+#' 
 #' @export
 EnsErrorss <- function(ens, ens.ref, obs, type){
   stopifnot(is.matrix(ens), is.matrix(ens.ref), 

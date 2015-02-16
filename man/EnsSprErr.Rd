@@ -22,4 +22,15 @@ Here we define the spread-error rate as the square root of the ratio of mean
 ensemble variance to the mean squared error of the ensemble mean with the
 verifying observations
 }
+\examples{
+fcst <- array(rnorm(100*50, sd=0.8), c(100,50))
+obs <- rnorm(100)
+EnsSprErr(fcst,obs)
+
+## compute spread to error ratio using veriApply
+veriApply('EnsSprErr', fcst=fcst, obs=obs)
+}
+\seealso{
+\code{\link{veriApply}}, \code{\link{FairSprErr}}
+}
 
