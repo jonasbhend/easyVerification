@@ -35,7 +35,7 @@ Additional forecast verification metrics can be added by the user following the 
 ## Installation 
 You can get the latest version using
 ```{r, eval=FALSE} 
-devtools::install_github("MeteoSwiss/easyVerification", build_vignettes=TRUE)
+devtools::install_github("MeteoSwiss/easyVerification")
 ```
 
 ## Getting started
