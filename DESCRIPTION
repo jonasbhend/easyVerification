@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Forecast verification metrics for large datasets
-Version: 0.1.5.1
-Date: 2015-02-16
+Version: 0.1.5.2
+Date: 2015-02-20
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
     person("Jacopo", "Ripoldi", role="ctb"),
@@ -10,7 +10,8 @@ Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     person("Rebecca", "Hiller", role="ctb"),
     person("Christoph", "Spirig", role="ctb"),
     person("Mark", "Liniger", role="ctb"),
-    person("Andreas", "Weigel", role="ctb"))
+    person("Andreas", "Weigel", role="ctb"),
+    person("Joaqu\'in", "Bedia Jimenez", role='ctb'))
 Description: This package provides functions to simplify application of
     forecast verification metrcis to large datasets. The forecast metrics are
     imported from the SpecsVerification package, and additional forecast metrics

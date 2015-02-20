@@ -1,3 +1,7 @@
+## easyVerification 0.1.5.2
+
+* Added ECOMS-UDG / easyVerification vignette
+
 ## easyVerification 0.1.5.1
 
 * updated documentation for elementary skill functions
