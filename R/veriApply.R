@@ -179,14 +179,16 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   out <- lapply(olist, function(x){
     if (length(x) == length(fcst)){
       ## repermute the output
-      fperm <- 1:nfdims
+      fperm <- rep(1, nfdims)
       fperm[c(tdim, ensdim)] <- nfdims - 1:0
+      if (nfdims > 2) fperm[-c(tdim,ensdim)] <- 1:(nfdims - 2)
       xout <- aperm(array(x, dim(fcst)), fperm)
     } else if (nodims > 1){
       if (length(x) == length(obs)){
-        operm <- 1:nodims
+        operm <- rep(1, nodims)
         operm[otdim] <- nodims
-        xout <- if (nodims == 1) c(x) else aperm(array(x, odims), operm)
+        if (nodims > 1) operm[-otdim] <- 1:(nodims - 1)
+        xout <- if (nodims == 1) c(x) else aperm(array(x, dim(obs)), operm)
       } else if (length(x) == prod(odims[-otdim])) {
         xout <- array(x, odims[-otdim])
       } 

@@ -1,3 +1,7 @@
+## easyVerification 0.1.5.3
+
+* Fixed bug in `veriApply` for reformatting output of scores (not affecting skill scores)
+
 ## easyVerification 0.1.5.2
 
 * Added ECOMS-UDG / easyVerification vignette
