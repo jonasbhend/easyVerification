@@ -32,11 +32,12 @@
 #' 
 #' @examples
 #' #forecast and observations
-#' obs <- rnorm(10)
-#' fcst <- array(rnorm(100), c(10,10))
+#' tm <- toymodel()
+#' 
 #' # compute the mean bias
-#' EnsError(fcst, obs, type='me')
-#' EnsMe(fcst, obs)
+#' EnsError(tm$fcst, tm$obs, type='me')
+#' # equivalently
+#' EnsMe(tm$fcst, tm$obs)
 #' 
 #' @seealso \code{\link{veriApply}}, \code{\link{EnsErrorss}}
 #' 

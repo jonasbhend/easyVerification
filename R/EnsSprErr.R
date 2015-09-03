@@ -34,12 +34,11 @@
 #' @seealso \code{\link{veriApply}}, \code{\link{FairSprErr}}
 #' 
 #' @examples
-#' fcst <- array(rnorm(100*50, sd=0.8), c(100,50))
-#' obs <- rnorm(100)
-#' EnsSprErr(fcst,obs)
+#' tm <- toymodel()
+#' EnsSprErr(tm$fcst, tm$obs)
 #' 
 #' ## compute spread to error ratio using veriApply
-#' veriApply('EnsSprErr', fcst=fcst, obs=obs)
+#' veriApply('EnsSprErr', fcst=tm$fcst, obs=tm$obs)
 #' 
 #' @export
 EnsSprErr <- function(ens, obs){

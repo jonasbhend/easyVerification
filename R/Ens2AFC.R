@@ -38,10 +38,8 @@
 #' doi:10.1175/MWR-D-10-05069.1
 #' 
 #' @examples
-#' signal <- rnorm(10)
-#' obs <- rnorm(10) + signal
-#' ens <- array(rnorm(10*30), c(10,30)) + signal
-#' Ens2AFC(ens, obs)
+#' tm <- toymodel()
+#' Ens2AFC(tm$fcst, tm$obs)
 #' 
 #' @seealso \code{\link{veriApply}}
 #' 

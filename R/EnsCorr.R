@@ -24,12 +24,13 @@
 #' @param obs n verifying observations
 #' 
 #' @examples
-#' obs <- rnorm(10)
-#' fcst <- array(rnorm(30), c(10,3)) + obs
-#' EnsCorr(fcst, obs)
+#' tm <- toymodel()
+#' 
+#' ## compute correlation directly
+#' EnsCorr(tm$fcst, tm$obs)
 #' 
 #' ## compute correlation using veriApply
-#' veriApply("EnsCorr", fcst, obs)
+#' veriApply("EnsCorr", tm$fcst, tm$obs)
 #' 
 #' @seealso \code{\link{veriApply}}
 #' 

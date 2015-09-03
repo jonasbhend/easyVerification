@@ -24,11 +24,10 @@
 #' @param obs n x j matrix of occurence of n verifying observations in j categories
 #' 
 #' @examples
-#' fcst <- array(rnorm(100*50), c(100,50))
-#' obs <- rnorm(100)
+#' tm <- toymodel()
 #' 
 #' ## compute ROC area for tercile forecasts using veriApply
-#' veriApply("EnsRoca", fcst=fcst, obs=obs, prob=1:2/3)
+#' veriApply("EnsRoca", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
 #' 
 #' @seealso \code{\link{veriApply}}, \code{\link{EnsRocss}}
 #' 

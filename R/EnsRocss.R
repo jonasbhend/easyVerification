@@ -50,11 +50,11 @@
 #'   Edition, 119-139.
 #'   
 #' @examples
-#' fcst <- array(rnorm(100*50), c(100,50))
-#' obs <- rnorm(100)
+#' tm <- toymodel()
 #' 
-#' ## compute ROC score for forecasts of x <= 0, 0 <= x < 1, and x > 1
-#' veriApply("EnsRocss", fcst, obs, threshold=c(0,1))
+#' ## compute ROC skill score for forecasts of x <= 0, 0 <= x < 1, and x > 1
+#' ## skill score is computed using climatological forecast as reference
+#' veriApply("EnsRocss", tm$fcst, tm$obs, threshold=c(0,1))
 #'   
 #' @seealso \code{\link{veriApply}}, \code{\link{EnsRoca}}
 #'   

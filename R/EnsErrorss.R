@@ -32,16 +32,13 @@
 #' @param type specifying what error metric to compute, one of [me, mae, mse, rmse]
 #' 
 #' @examples
-#' signal <- rnorm(100)
-#' fcst <- array(rnorm(100*50), c(100,50)) + signal
-#' fcst2 <- array(rnorm(100*50), c(100,50)) + 2*signal
-#' obs <- rnorm(100) + signal
+#' tm <- toymodel()
 #' 
-#' ## compute skill score against reference forecast directly
-#' EnsErrorss(ens=fcst, ens.ref=fcst2, obs=obs, type='rmse')
+#' ## compute RMSE skill score against reference forecast with a bias of +2
+#' EnsErrorss(ens=tm$fcst, ens.ref=tm$fcst + 2, obs=tm$obs, type='rmse')
 #' 
 #' ## compute skill score using veriApply
-#' veriApply("EnsRmsess", fcst=fcst, obs=obs, fcst.ref=fcst2)
+#' veriApply("EnsRmsess", fcst=tm$fcst, obs=tm$obs, fcst.ref=tm$fcst + 2)
 #' 
 #' 
 #' @seealso \code{\link{veriApply}}, \code{\link{EnsError}}

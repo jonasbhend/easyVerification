@@ -51,9 +51,8 @@
 #'   \code{obs}.
 #'   
 #' @examples
-#' obs <- array(rnorm(1000*30), c(1000,30))
-#' fcst <- array(rnorm(1000*30*50), c(1000, 30, 50)) + 0.2*as.vector(obs)
-#' f.me <- veriApply('EnsMe', fcst, obs)
+#' tm <- toyarray()
+#' f.me <- veriApply('EnsMe', tm$fcst, tm$obs)
 #' 
 #' ## find more examples and instructions in the vignette
 #' \dontrun{

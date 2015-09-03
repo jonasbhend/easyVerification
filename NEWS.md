@@ -1,3 +1,8 @@
+## easyVerification 0.1.6.0
+
+* added `toymodel` to produce forecast-observation pairs
+* added `toyarray` to produce multiple independent forecast-observation pairs, for example at different spatial locations
+
 ## easyVerification 0.1.5.3
 
 * Fixed bug in `veriApply` for reformatting output of scores (not affecting skill scores)

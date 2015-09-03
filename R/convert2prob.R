@@ -35,16 +35,15 @@
 #' or an indicator for the observations)
 #' 
 #' @examples
-#' fcst <- array(rnorm(100*50), c(100, 50))
-#' obs <- rnorm(100)
+#' tm <- toymodel()
 #' 
 #' ## convert to tercile forecasts (only display first forecast and obs)
-#' convert2prob(fcst, prob=1:2/3)[1,]
-#' convert2prob(obs, prob=1:2/3)[1,]
+#' convert2prob(tm$fcst, prob=1:2/3)[1,]
+#' convert2prob(tm$obs, prob=1:2/3)[1,]
 #' 
 #' ## convert to category forecasts (smaller and larger than 1)
-#' convert2prob(fcst, threshold=1)[1,]
-#' convert2prob(obs, threshold=1)[1,]
+#' convert2prob(tm$fcst, threshold=1)[1,]
+#' convert2prob(tm$obs, threshold=1)[1,]
 #' 
 #' @seealso \code{\link{veriApply}}
 #' 
