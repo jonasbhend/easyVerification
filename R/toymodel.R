@@ -87,7 +87,7 @@ toymodel <- function(N=35, nens=51, alpha=0.5, beta=0){
 #' @param ... additional arguments passed to \code{\link{toymodel}}
 #' @export
 toyarray <- function(dims=c(10,5), ...){
-  tm <- sapply(rep(1, prod(dims)), function(x) toymodel(...), ...)
+  tm <- sapply(rep(1, prod(dims)), function(x) toymodel(...))
   fcst <- sapply(tm['fcst', ], function(x) x, simplify='array')
   obs <- sapply(tm['obs', ], function(x) x)
   ## rearrange fcst and obs to put forecast and ensemble dimensions last
