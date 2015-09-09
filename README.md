@@ -1,10 +1,3 @@
----
-output:
-  md_document:
-    variant: markdown_github
----
-
-
 # easyVerification
 
 This package provides functions to simplify application of forecast verification metrics to large datasets of ensemble forecasts. The design goals of `easyVerification` are:
@@ -54,7 +47,7 @@ ls(pos="package:easyVerification")
 #>  [5] "EnsErrorss"   "EnsMae"       "EnsMaess"     "EnsMe"       
 #>  [9] "EnsMess"      "EnsMse"       "EnsMsess"     "EnsRmse"     
 #> [13] "EnsRmsess"    "EnsRoca"      "EnsRocss"     "EnsSprErr"   
-#> [17] "FairSprErr"   "veriApply"
+#> [17] "FairSprErr"   "toyarray"     "toymodel"     "veriApply"
 
 ## set up the forecast and observation data structures
 ## assumption: we have 100 spatial instances, 15 forecast times and 
@@ -62,6 +55,7 @@ ls(pos="package:easyVerification")
 fcst <- array(rnorm(100*15*51), c(100, 15, 51))
 obs <- array(rnorm(100*15), c(100, 15))
 fo.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs)
+#> Loading required namespace: parallel
 
 ## if the data were to be organised differently, this has to be indicated
 ## e.g. ensemble members first, 10x10 spatial domain
@@ -80,4 +74,13 @@ range(fo.crpss$crpss - c(fo2.crpss$crpss))
 #> [1] 0 0
 ```
 
-To get additional help and examples please see the vignette `{r, eval=FALSE} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{r, eval=FALSE} help(veriApply)`).
+To get additional help and examples please see the vignette 
+
+```r
+vignette('easyVerification')
+```
+or the help pages of the functions in `easyVerification`, e.g: 
+
+```r
+help(veriApply)
+```

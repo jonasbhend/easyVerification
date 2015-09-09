@@ -11,6 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "README-"
 )
 ```
+
 # easyVerification
 
 This package provides functions to simplify application of forecast verification metrics to large datasets of ensemble forecasts. The design goals of `easyVerification` are:
@@ -76,4 +77,11 @@ range(fo.crpss$crpss - c(fo2.crpss$crpss))
 
 ```
 
-To get additional help and examples please see the vignette `{r, eval=FALSE} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{r, eval=FALSE} help(veriApply)`).
+To get additional help and examples please see the vignette 
+```{r, eval=FALSE} 
+vignette('easyVerification')
+```
+or the help pages of the functions in `easyVerification`, e.g: 
+```{r, eval=FALSE} 
+help(veriApply)
+```
