@@ -1,3 +1,10 @@
+## easyVerification 0.1.7.0
+
+* added parallelization of `veriApply` using the `parallel` package
+  * parallelization is based on FORK nodes, and thus won't work under Windows
+  * under Windows and if `parallel` is not available, the original, unparallelized fallback is used
+  * parallelization will use up to 16 nodes, but will leave one node free for other tasks
+
 ## easyVerification 0.1.6.0
 
 * added `toymodel` to produce forecast-observation pairs

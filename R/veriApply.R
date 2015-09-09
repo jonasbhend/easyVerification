@@ -1,6 +1,6 @@
 # veriApply.R apply verification metrics to large datasets
 #
-#     Copyright (C) 2014 MeteoSwiss
+#     Copyright (C) 2015 MeteoSwiss
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -65,7 +65,9 @@
 #' @keywords utilities
 #' @export
 #' 
-veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, ...){
+veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
+                      ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
+                      parallel=FALSE, ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -154,13 +156,36 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   
   ## run the workhorse
   Tmatrix <- function(x) if (is.matrix(x)) t(x) else as.matrix(x)
+  
+  ## check whether parallel package is available
+  hasparallel <- FALSE
+  ## check whether FORK nodes can be initialized
+  if (requireNamespace("parallel", quietly=TRUE)){
+    ncpus <- min(max(detectCores() - 1, 1), 16)
+    if (ncpus > 1){
+      .cl <- try(makeCluster(ncpus, type='FORK'), silent=TRUE)
+      if (! 'try-error' %in% class(.cl)) hasparallel <- TRUE      
+    } 
+  }
+
+  if (hasparallel){
+    out <- Tmatrix(parApply(cl=.cl, 
+                            X=xall[xmask,,,drop=F], 
+                            MARGIN=1, 
+                            FUN=veriUnwrap, 
+                            verifun=verifun, 
+                            nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
+                            ...))    
+    stopCluster(.cl)
     
-  out <- Tmatrix(apply(xall[xmask,,,drop=F], 
-                       MARGIN=1, 
-                       FUN=veriUnwrap, 
-                       verifun=verifun, 
-                       nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
-                       ...))
+  } else {
+    out <- Tmatrix(apply(xall[xmask,,,drop=F], 
+                         MARGIN=1, 
+                         FUN=veriUnwrap, 
+                         verifun=verifun, 
+                         nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
+                         ...))    
+  }
   
   ## reformat the output by converting to list
   if (is.list(out)){

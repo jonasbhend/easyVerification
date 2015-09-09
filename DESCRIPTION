@@ -1,6 +1,6 @@
 Package: easyVerification
 Title: Forecast verification metrics for large datasets
-Version: 0.1.6.1
+Version: 0.1.7.0
 Date: 2015-09-08
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
@@ -24,7 +24,8 @@ Depends:
     RCurl
 Suggests:
     testthat,
-    knitr
+    knitr,
+    parallel
 License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
