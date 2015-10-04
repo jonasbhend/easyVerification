@@ -55,6 +55,19 @@
 #'   Consequently, this dimension can be different from the dimension in 
 #'   \code{obs}.
 #'   
+#'   Parallel processing is enabled using the \code{\link[parallel]{parallel}}
+#'   package. Prallel verification is using \code{ncpus} \code{FORK} clusters
+#'   or, if \code{ncpus} are not specified, one less than the autodetected number 
+#'   of cores. The maximum number of cores used for parallel processing with
+#'   autodetection of the number of available cores can be set with the 
+#'   \code{maxncpus} argument.
+#'   
+#'   Progress bars are available for non-parallel computation of the verification 
+#'   metrics. Please note, however, that the progress bar only indicates the time 
+#'   of computation needed for the actual verification metrics, input and output 
+#'   re-arrangement is not included in the progress bar.
+#'   
+#'   
 #' @examples
 #' tm <- toyarray()
 #' f.me <- veriApply('EnsMe', tm$fcst, tm$obs)
