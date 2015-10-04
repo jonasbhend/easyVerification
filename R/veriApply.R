@@ -67,7 +67,7 @@
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
                       ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, ...){
+                      parallel=FALSE, maxncpus = 16, ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -160,10 +160,10 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   ## check whether parallel package is available
   hasparallel <- FALSE
   ## check whether FORK nodes can be initialized
-  if (requireNamespace("parallel", quietly=TRUE)){
-    ncpus <- min(max(detectCores() - 1, 1), 16)
+  if (parallel && requireNamespace("parallel", quietly=TRUE)){
+    ncpus <- min(max(detectCores() - 1, 1), maxncpus)
     if (ncpus > 1){
-      .cl <- try(makeCluster(ncpus, type='FORK'), silent=TRUE)
+      .cl <- try(makeCluster(ncpus, type='PSOCK'), silent=TRUE)
       if (! 'try-error' %in% class(.cl)) hasparallel <- TRUE      
     } 
   }
