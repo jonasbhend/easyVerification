@@ -6,7 +6,7 @@
 \usage{
 veriApply(verifun, fcst, obs, fcst.ref = NULL, tdim = length(dim(fcst)) - 1,
   ensdim = length(dim(fcst)), prob = NULL, threshold = NULL,
-  na.rm = FALSE, ...)
+  na.rm = FALSE, parallel = FALSE, maxncpus = 16, ncpus = NULL, ...)
 }
 \arguments{
 \item{verifun}{Name of function to compute verification metric (score, skill
@@ -28,6 +28,14 @@ scores only)}
 \item{threshold}{absolute threshold for category forecasts (see details)}
 
 \item{na.rm}{logical, should incomplete forecasts be used?}
+
+\item{parallel}{logical, should pararllel execution of verification be used
+(see Details)?}
+
+\item{maxncpus}{upper bound for self-selected number of CPUs}
+
+\item{ncpus}{number of CPUs used in parallel computation, self-selected number
+of CPUs is used when \code{is.null(ncpus)} (the default).}
 
 \item{...}{additional arguments passed to \code{verifun}}
 }
@@ -51,6 +59,18 @@ The probability and absolute thresholds can be supplied in various
   applied to convert the continuous forecasts to category forecasts.
   Consequently, this dimension can be different from the dimension in
   \code{obs}.
+
+  Parallel processing is enabled using the \code{\link[parallel]{parallel}}
+  package. Prallel verification is using \code{ncpus} \code{FORK} clusters
+  or, if \code{ncpus} are not specified, one less than the autodetected number
+  of cores. The maximum number of cores used for parallel processing with
+  autodetection of the number of available cores can be set with the
+  \code{maxncpus} argument.
+
+  Progress bars are available for non-parallel computation of the verification
+  metrics. Please note, however, that the progress bar only indicates the time
+  of computation needed for the actual verification metrics, input and output
+  re-arrangement is not included in the progress bar.
 }
 \examples{
 tm <- toyarray()

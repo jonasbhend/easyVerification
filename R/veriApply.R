@@ -35,6 +35,11 @@
 #' @param prob probability threshold for category forecasts (see details)
 #' @param threshold absolute threshold for category forecasts (see details)
 #' @param na.rm logical, should incomplete forecasts be used?
+#' @param parallel logical, should pararllel execution of verification be used 
+#' (see Details)?
+#' @param maxncpus upper bound for self-selected number of CPUs
+#' @param ncpus number of CPUs used in parallel computation, self-selected number
+#' of CPUs is used when \code{is.null(ncpus)} (the default).
 #' @param ... additional arguments passed to \code{verifun}
 #'   
 #' @details The probability and absolute thresholds can be supplied in various 
@@ -49,6 +54,19 @@
 #'   applied to convert the continuous forecasts to category forecasts. 
 #'   Consequently, this dimension can be different from the dimension in 
 #'   \code{obs}.
+#'   
+#'   Parallel processing is enabled using the \code{\link[parallel]{parallel}}
+#'   package. Prallel verification is using \code{ncpus} \code{FORK} clusters
+#'   or, if \code{ncpus} are not specified, one less than the autodetected number 
+#'   of cores. The maximum number of cores used for parallel processing with
+#'   autodetection of the number of available cores can be set with the 
+#'   \code{maxncpus} argument.
+#'   
+#'   Progress bars are available for non-parallel computation of the verification 
+#'   metrics. Please note, however, that the progress bar only indicates the time 
+#'   of computation needed for the actual verification metrics, input and output 
+#'   re-arrangement is not included in the progress bar.
+#'   
 #'   
 #' @examples
 #' tm <- toyarray()
@@ -67,7 +85,7 @@
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
                       ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, maxncpus = 16, ...){
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -161,29 +179,33 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   hasparallel <- FALSE
   ## check whether FORK nodes can be initialized
   if (parallel && requireNamespace("parallel", quietly=TRUE)){
-    ncpus <- min(max(detectCores() - 1, 1), maxncpus)
+    if (is.null(ncpus)) {
+      ncpus <- min(max(parallel::detectCores() - 1, 1), maxncpus)
+      print(paste("Number of CPUs", ncpus))
+    }
     if (ncpus > 1){
-      .cl <- try(makeCluster(ncpus, type='PSOCK'), silent=TRUE)
+      .cl <- try(parallel::makeCluster(ncpus, type='FORK'), silent=TRUE)
       if (! 'try-error' %in% class(.cl)) hasparallel <- TRUE      
     } 
   }
 
+  nind <- c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh)
   if (hasparallel){
-    out <- Tmatrix(parApply(cl=.cl, 
+    on.exit(parallel::stopCluster(.cl))
+    out <- Tmatrix(parallel::parApply(cl=.cl, 
                             X=xall[xmask,,,drop=F], 
                             MARGIN=1, 
                             FUN=veriUnwrap, 
                             verifun=verifun, 
-                            nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
+                            nind=nind,
                             ...))    
-    stopCluster(.cl)
     
   } else {
-    out <- Tmatrix(apply(xall[xmask,,,drop=F], 
+    out <- Tmatrix(pbapply(xall[xmask,,,drop=F], 
                          MARGIN=1, 
                          FUN=veriUnwrap, 
                          verifun=verifun, 
-                         nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
+                         nind=nind,
                          ...))    
   }
   
