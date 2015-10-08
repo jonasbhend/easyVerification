@@ -1,3 +1,12 @@
+## easyVerification 0.1.7.2
+
+* fixed documentation
+* added new function to convert counts (from `convert2prob`) to probabilities (`count2prob`)
+
+## easyVerificaiton 0.1.7.1
+
+* additional arguments for parallel processing courtesy of Matteo De Felice
+
 ## easyVerification 0.1.7.0
 
 * added parallelization of `veriApply` using the `parallel` package
