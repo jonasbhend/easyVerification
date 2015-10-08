@@ -1,0 +1,4 @@
+%\VignetteIndexEntry{Verification of seasonal forecasts from the ECOMS User Data Gateway: a worked example}
+\documentclass{article}
+\begin{document}
+\end{document}

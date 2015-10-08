@@ -43,44 +43,65 @@ suppressPackageStartupMessages(library(easyVerification))
 
 ## check out what is included in easyVerification
 ls(pos="package:easyVerification")
-#>  [1] "convert2prob" "Ens2AFC"      "EnsCorr"      "EnsError"    
-#>  [5] "EnsErrorss"   "EnsMae"       "EnsMaess"     "EnsMe"       
-#>  [9] "EnsMess"      "EnsMse"       "EnsMsess"     "EnsRmse"     
-#> [13] "EnsRmsess"    "EnsRoca"      "EnsRocss"     "EnsSprErr"   
-#> [17] "FairSprErr"   "toyarray"     "toymodel"     "veriApply"
+#>  [1] "convert2prob" "countEns"     "Ens2AFC"      "EnsCorr"     
+#>  [5] "EnsError"     "EnsErrorss"   "EnsMae"       "EnsMaess"    
+#>  [9] "EnsMe"        "EnsMess"      "EnsMse"       "EnsMsess"    
+#> [13] "EnsRmse"      "EnsRmsess"    "EnsRoca"      "EnsRocss"    
+#> [17] "EnsSprErr"    "FairSprErr"   "toyarray"     "toymodel"    
+#> [21] "veriApply"
 
 ## set up the forecast and observation data structures
-## assumption: we have 100 spatial instances, 15 forecast times and 
-## 51 ensemble members
-fcst <- array(rnorm(100*15*51), c(100, 15, 51))
-obs <- array(rnorm(100*15), c(100, 15))
-fo.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs)
-#> Loading required namespace: parallel
+## assumption: we have 13 x 5 spatial instances, 15 forecast 
+## times and 51 ensemble members
+tm <- toyarray(c(13,5), N=15, nens=51)
+fo.crpss <- veriApply("EnsCrpss", fcst=tm$fcst, obs=tm$obs)
 
-## if the data were to be organised differently, this has to be indicated
-## e.g. ensemble members first, 10x10 spatial domain
-fcst <- array(aperm(fcst, c(3,2,1)), c(51, 15, 10, 10))
-obs <- array(t(obs), c(15, 10, 10))
-fo2.crpss <- veriApply("EnsCrpss", fcst=fcst, obs=obs, 
-                       ensdim=1, tdim=2)
+## if the data are organized differently such that forecast
+## instance and ensemble members are NOT the last two array
+## dimensions, this has to be indicated
+
+## alternative setup:
+## forecast instance, ensemble members, all forecast locations
+## collated in one dimension
+fcst2 <- array(aperm(tm$fcst, c(3,4,1,2)), c(15, 51, 13*5))
+obs2 <- array(aperm(tm$obs, c(3,1,2)), c(15, 13*5))
+fo2.crpss <- veriApply("EnsCrpss", fcst=fcst2, obs=obs2, 
+                       ensdim=2, tdim=1)
 
 ## The forecast evaluation metrics are the same, but the 
 ## data structure is different in the two cases
 dim(fo.crpss$crpss)
-#> [1] 100
+#> [1] 13  5
 dim(fo2.crpss$crpss)
-#> [1] 10 10
+#> [1] 65
 range(fo.crpss$crpss - c(fo2.crpss$crpss))
 #> [1] 0 0
 ```
 
-To get additional help and examples please see the vignette 
+## Parallel processing
+
+As of `easyVerification 0.1.7.0`, parallel processing is supported under *NIX systems. The following minimal example illustrates how to use the parallel processing capabilities of `easyVerification`.
 
 ```r
-vignette('easyVerification')
-```
-or the help pages of the functions in `easyVerification`, e.g: 
+## generate a toy-model forecast observation set of 
+## 10 x 10 forecast locations (e.g. lon x lat)
+tm <- toyarray(c(10,10))
 
-```r
-help(veriApply)
+## run and time the ROC skill score for tercile forecasts without parallelization
+system.time({
+  tm.rocss <- veriApply("EnsRocss", tm$fcst, tm$obs, prob=1:2/3)  
+})
+#>    user  system elapsed 
+#>   2.376   0.164   2.783
+
+## run the ROC skill score with parallelization
+system.time({
+  tm.rocss.par <- veriApply("EnsRocss", tm$fcst, tm$obs, prob=1:2/3, parallel=TRUE)
+})
+#> Loading required namespace: parallel
+#> [1] "Number of CPUs 3"
+#>    user  system elapsed 
+#>   0.112   0.036   1.305
 ```
+
+To get additional help and examples please see the vignette `{r, eval=FALSE} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{r, eval=FALSE} help(veriApply)`).

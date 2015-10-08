@@ -1,6 +1,6 @@
 # veriApply.R apply verification metrics to large datasets
 #
-#     Copyright (C) 2014 MeteoSwiss
+#     Copyright (C) 2015 MeteoSwiss
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -32,23 +32,63 @@
 #'   scores only)
 #' @param tdim index of dimension with the different forecasts
 #' @param ensdim index of dimension with the different ensemble members
-#' @param prob probability threshold for category forecasts (see details)
-#' @param threshold absolute threshold for category forecasts (see details)
+#' @param prob probability threshold for category forecasts (see below)
+#' @param threshold absolute threshold for category forecasts (see below)
 #' @param na.rm logical, should incomplete forecasts be used?
+#' @param parallel logical, should pararllel execution of verification be used 
+#' (see below)?
+#' @param maxncpus upper bound for self-selected number of CPUs
+#' @param ncpus number of CPUs used in parallel computation, self-selected number
+#' of CPUs is used when \code{is.null(ncpus)} (the default).
 #' @param ... additional arguments passed to \code{verifun}
 #'   
-#' @details The probability and absolute thresholds can be supplied in various 
-#'   formats. If a vector of values is supplied, the same threshold is applied 
-#'   to all forecasts (e.g. lead times, spatial locations). If the thresholds 
-#'   are supplied as a matrix, the number of rows has to correspond to the 
-#'   number of forecasts (i.e. same length as 
-#'   \code{length(fcst)/prod(dim(fcst)[c(tdim, ensdim)])}). Finally, the 
-#'   thresholds can also be supplied with the dimensionality corresponding to 
-#'   the \code{obs} array. In this case the dimension of the array where in 
-#'   \code{obs} the forecast instances are stored holds the thresholds to be 
-#'   applied to convert the continuous forecasts to category forecasts. 
-#'   Consequently, this dimension can be different from the dimension in 
-#'   \code{obs}.
+#' @section Parallel processing:
+#'   Parallel processing is enabled using the \code{\link[parallel]{parallel}} 
+#'   package. Prallel verification is using \code{ncpus} \code{FORK} clusters 
+#'   or, if \code{ncpus} are not specified, one less than the autodetected
+#'   number of cores. The maximum number of cores used for parallel processing
+#'   with autodetection of the number of available cores can be set with the 
+#'   \code{maxncpus} argument.
+#'   
+#'   Progress bars are available for non-parallel computation of the
+#'   verification metrics. Please note, however, that the progress bar only
+#'   indicates the time of computation needed for the actual verification
+#'   metrics, input and output re-arrangement is not included in the progress
+#'   bar.
+#'   
+#' @section Conversion to category forecasts:
+#'   To automatically convert continuous forecasts into category
+#'   forecasts, absolute (\code{threshold}) or relative thresholds (\code{prob})
+#'   have to be supplied. For some scores and skill scores (e.g. the ROC area
+#'   and skill score), a list of categories will be supplied with categories
+#'   ordered. That is, if \code{prob = 1:2/3} for tercile forecasts, \code{cat1}
+#'   corresponds to the lower tercile, \code{cat2} to the middle, and
+#'   \code{cat3} to the upper tercile.
+#'   
+#'   Absolute and relative thresholds can be supplied in various formats. If a 
+#'   vector of thresholds is supplied with the \code{threshold} argument, the
+#'   same threshold is applied to all forecasts (e.g. lead times, spatial
+#'   locations). If a vector of relative thresholds is supplied using
+#'   \code{prob}, the category boundaries to be applied are computed separately
+#'   for each space-time location. Relative boundaries specified using
+#'   \code{prob} are computed separately for the observations and forecasts, but
+#'   jointly for all available ensemble members.
+#'   
+#'   Location specific thresholds can also be supplied. If the thresholds are 
+#'   supplied as a matrix, the number of rows has to correspond to the number of
+#'   forecast space-time locations (i.e. same length as
+#'   \code{length(fcst)/prod(dim(fcst)[c(tdim, ensdim)])}). Alternatively, but
+#'   equivalently, the thresholds can also be supplied with the dimensionality
+#'   correpsonding to the \code{obs} array with the difference that the forecast
+#'   dimension in \code{obs} contains the category boundaries (absolute or
+#'   relative) and thus may differ in length.
+#'   
+#' @note If the forecasts and observations are only available as category probabilities (or 
+#'   ensemble counts as used in \code{SpecsVerification}) as opposed to as continuous numeric variables, \code{veriApply} 
+#'   cannot be used but the atomic verification functions for category forecasts
+#'   have to be applied directly. 
+#'   
+#' @seealso \code{\link{convert2prob}} for conversion of continuous into category forecasts (and observations)
 #'   
 #' @examples
 #' tm <- toyarray()
@@ -65,7 +105,9 @@
 #' @keywords utilities
 #' @export
 #' 
-veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, ...){
+veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
+                      ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -154,13 +196,40 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   
   ## run the workhorse
   Tmatrix <- function(x) if (is.matrix(x)) t(x) else as.matrix(x)
-    
-  out <- Tmatrix(apply(xall[xmask,,,drop=F], 
-                       MARGIN=1, 
-                       FUN=veriUnwrap, 
-                       verifun=verifun, 
-                       nind=c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh),
-                       ...))
+  
+  ## check whether parallel package is available
+  hasparallel <- FALSE
+  ## check whether FORK nodes can be initialized
+  if (parallel && requireNamespace("parallel", quietly=TRUE)){
+    if (is.null(ncpus)) {
+      ncpus <- min(max(parallel::detectCores() - 1, 1), maxncpus)
+      print(paste("Number of CPUs", ncpus))
+    }
+    if (ncpus > 1){
+      .cl <- try(parallel::makeCluster(ncpus, type='FORK'), silent=TRUE)
+      if (! 'try-error' %in% class(.cl)) hasparallel <- TRUE      
+    } 
+  }
+
+  nind <- c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh)
+  if (hasparallel){
+    on.exit(parallel::stopCluster(.cl))
+    out <- Tmatrix(parallel::parApply(cl=.cl, 
+                            X=xall[xmask,,,drop=F], 
+                            MARGIN=1, 
+                            FUN=veriUnwrap, 
+                            verifun=verifun, 
+                            nind=nind,
+                            ...))    
+        
+  } else {
+    out <- Tmatrix(pbapply::pbapply(xall[xmask,,,drop=F], 
+                         MARGIN=1, 
+                         FUN=veriUnwrap, 
+                         verifun=verifun, 
+                         nind=nind,
+                         ...))    
+  }
   
   ## reformat the output by converting to list
   if (is.list(out)){
