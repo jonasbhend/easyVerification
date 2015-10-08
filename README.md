@@ -104,4 +104,4 @@ system.time({
 #>   0.112   0.036   1.305
 ```
 
-To get additional help and examples please see the vignette `{r, eval=FALSE} vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `{r, eval=FALSE} help(veriApply)`).
+To get additional help and examples please see the vignette `vignette('easyVerification')` or the help pages of the functions in `easyVerification` (e.g. `help(veriApply)`).
