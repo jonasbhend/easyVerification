@@ -1,3 +1,7 @@
+## easyVerification 0.1.7.3
+
+* added support for ensembles of size 1
+
 ## easyVerification 0.1.7.2
 
 * fixed documentation

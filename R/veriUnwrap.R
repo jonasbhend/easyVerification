@@ -70,11 +70,11 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
     threshold <- NULL
   }
   ## reset x
-  x <- x[,seq(1,nens + nref + nobs)]
+  x <- x[,seq(1,nens + nref + nobs), drop=FALSE]
   nn <- ncol(x)  
   ## mask missing values
   xmask <- apply(!is.na(x), 1, all)
-  x <- x[xmask,]
+  x <- x[xmask,,drop=FALSE]
   ## check whether this is a skill score or a score
   is.skill <- tolower(substr(verifun, nchar(verifun) - 1, nchar(verifun))) == 'ss'
   is.dress <- tolower(substr(verifun, 1, 5)) == 'dress'
@@ -89,7 +89,7 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
                   DressEnsemble(xref),
                   x[,nn])
     } else {
-      out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
+      out <- vfun(convert2prob(x[,1:nens,drop=FALSE], prob=prob, threshold=threshold),
                   convert2prob(xref, prob=prob, threshold=threshold),
                   convert2prob(x[,nn], prob=prob, threshold=threshold), ...)      
     }
@@ -99,7 +99,7 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
       out <- vfun(DressEnsemble(x[,1:nens]),
                   x[,nn])
     } else {
-      out <- vfun(convert2prob(x[,1:nens], prob=prob, threshold=threshold),
+      out <- vfun(convert2prob(x[,1:nens,drop=FALSE], prob=prob, threshold=threshold),
                   convert2prob(x[,nn], prob=prob, threshold=threshold), ...)          
     }
   }
