@@ -1,3 +1,7 @@
+## easyVerification 0.1.8
+
+* prepared package for release on CRAN
+
 ## easyVerification 0.1.7.3
 
 * added support for ensembles of size 1

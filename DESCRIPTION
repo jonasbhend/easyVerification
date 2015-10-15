@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Forecast verification metrics for large datasets
-Version: 0.1.7.3
-Date: 2015-10-14
+Version: 0.1.8
+Date: 2015-10-15
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
     person("Jacopo", "Ripoldi", role="ctb"),
@@ -14,24 +14,27 @@ Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     person("Joaqu\'in", "Bedia Jimenez", role='ctb'),
     person("Matteo", "De Felice", role='ctb'))
 Description: This package provides functions to simplify application of
-    forecast verification metrcis to large datasets. The forecast metrics are
+    atomic forecast verification metrcis to large datasets. The forecast metrics are
     imported from the SpecsVerification package, and additional forecast metrics
     are provided with this package. Alternatively, new forecast
     scores can be implemented using the example scores provided in this
     package.
 Depends:
     R (>= 3.0),
-    SpecsVerification
+    SpecsVerification,
+    stats,
+    utils
 Imports:
     RCurl,
     pbapply
 Suggests:
     testthat,
     knitr,
-    parallel
+    parallel,
+    R.rsp
 License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
 URL: http://www.meteoswiss.ch
 BugReports: https://github.com/MeteoSwiss/easyVerification/issues
-VignetteBuilder: knitr
+VignetteBuilder: knitr, R.rsp

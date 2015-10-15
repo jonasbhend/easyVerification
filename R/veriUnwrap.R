@@ -85,8 +85,8 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
       xref <- t(array(x[,nn], c(nrow(x), nrow(x))))      
     }
     if (is.dress){
-      out <- vfun(DressEnsemble(x[,1:nens]),
-                  DressEnsemble(xref),
+      out <- vfun(SpecsVerification::DressEnsemble(x[,1:nens]),
+                  SpecsVerification::DressEnsemble(xref),
                   x[,nn])
     } else {
       out <- vfun(convert2prob(x[,1:nens,drop=FALSE], prob=prob, threshold=threshold),
@@ -96,7 +96,7 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
   } else {
     stopifnot(nn == nens + 1)
     if (is.dress){
-      out <- vfun(DressEnsemble(x[,1:nens]),
+      out <- vfun(SpecsVerification::DressEnsemble(x[,1:nens]),
                   x[,nn])
     } else {
       out <- vfun(convert2prob(x[,1:nens,drop=FALSE], prob=prob, threshold=threshold),
