@@ -1,8 +1,9 @@
 ---
 title: "easyVerification"
 author: "Jonas Bhend"
-date: "2015-02-20"
-output: pdf_document
+date: "2015-10-19"
+output:
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{easyVerification}
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,11 +25,12 @@ Forecast metrics are imported from the `SpecsVerification` package. Additional v
 ```r
   suppressPackageStartupMessages(library(easyVerification))
   ls(pos="package:easyVerification")
-#>  [1] "convert2prob" "Ens2AFC"      "EnsCorr"      "EnsError"    
-#>  [5] "EnsErrorss"   "EnsMae"       "EnsMaess"     "EnsMe"       
-#>  [9] "EnsMess"      "EnsMse"       "EnsMsess"     "EnsRmse"     
-#> [13] "EnsRmsess"    "EnsRoca"      "EnsRocss"     "EnsSprErr"   
-#> [17] "FairSprErr"   "veriApply"
+#>  [1] "convert2prob" "count2prob"   "Ens2AFC"      "EnsCorr"     
+#>  [5] "EnsError"     "EnsErrorss"   "EnsMae"       "EnsMaess"    
+#>  [9] "EnsMe"        "EnsMess"      "EnsMse"       "EnsMsess"    
+#> [13] "EnsRmse"      "EnsRmsess"    "EnsRoca"      "EnsRocss"    
+#> [17] "EnsSprErr"    "FairSprErr"   "toyarray"     "toymodel"    
+#> [21] "veriApply"
 ```
 
 At the time of publication these forecast skill metrics were included:
@@ -46,7 +48,13 @@ In addition, the following forecast scores from `SpecsVerification` can be used:
 Additional forecast verification metrics can be added by the user. This is illustrated in Section XX of this document.
 
 ## Installation 
-You can get the latest version using 
+You can get the latest version from CRAN
+
+```r
+install.packages("easyVerification")
+```
+
+You can get the latest development version using
 
 ```r
 devtools::install_github("MeteoSwiss/easyVerification")
@@ -56,50 +64,53 @@ devtools::install_github("MeteoSwiss/easyVerification")
 
 The workhorse of the `easyVerification` package is a function called `veriApply`. It is used to apply the functions that compute forecast scores and skill scores to large arrays of ensemble forecasts and corresponding observations. The following example illustrates how to compute the continous ranked probability skill score of an ensemble forecast using `veriApply`. 
 
-First, let's generate an ensemble of forecasts and corresponding verifying observations. We assume that there are 100 spatial locations (or lead times or a combination ot these), 30 forecasts instances (forecast times), and 51 ensemble members. The ensemble forecast is furthermore unbiased and well calibrated. 
+First, let's generate an ensemble of forecasts and corresponding verifying observations. We assume that there are 100 spatial locations (or lead times or a combination ot these), 30 forecasts instances (forecast times), and 51 ensemble members. The ensemble forecast is furthermore unbiased and well calibrated. Forecast-observation pairs can be generated using the `toymodel` and `toyarray` functions.
 
 
 ```r
-
-signal <- outer(sin(seq(0,3*pi, length=100)) + seq(-2,2,length=100), rnorm(15), '+')
-fcst <- array(rnorm(100*15*51), c(100, 15, 51)) + c(signal)
-obs <- array(rnorm(100*15), c(100, 15)) + c(signal)
+tm <- toyarray(dims=100, N=30, nens=51)
+## inspect the toy model object
+str(tm)
+#> List of 2
+#>  $ fcst: num [1:100, 1:30, 1:51] 0.869 1.014 0.786 0.309 -0.275 ...
+#>  $ obs : num [1:100, 1:30] 0.5065 0.3902 -0.7168 0.1825 -0.0212 ...
 ```
 
 Next, we compute the continuous ranked probability score (CRPS). This score operates using absolute values of the forecast and observation and no conversion to probabilities is thus required. We use the unbiased (fair) version of the CRPS from the `SpecsVerification` package.
 
 
 ```r
-f.crps <- veriApply("FairCrps", fcst=fcst, obs=obs)
+f.crps <- veriApply("FairCrps", fcst=tm$fcst, obs=tm$obs)
 ```
 
 If we were to compute the ranked probability score (RPS) instead, either percentiles of the climatology or absolute thresholds have to be supplied to convert the continuous forecasts and observations into category forecasts previous to the analysis. Percentiles of the climatology are provided using the additional argument `prob=...`, absolute thresholds using `threshold=...`. The percentiles are computed on the forecast instances (here the 2nd dimension of `fcst` and `obs`) using `convert2prob`.
 
 
 ```r
-f.rps <- veriApply("FairRps", fcst=fcst, obs=obs, prob=c(1/3,2/3))
-f.rps2 <- veriApply("FairRps", fcst=fcst, obs=obs, threshold=1)
+f.rps <- veriApply("FairRps", fcst=tm$fcst, obs=tm$obs, prob=c(1/3,2/3))
+f.rps2 <- veriApply("FairRps", fcst=tm$fcst, obs=tm$obs, threshold=1)
 ```
 
 Finally, to compute skill scores two approaches are supported. First, skill scores are computed by default with reference to climatological forecasts. For this, no additional arguments have to be supplied. Please note, the output of `veriApply` is of the same data type as the output of the function that is invoked within `veriApply`. For the RPSS and CRPSS, a list with the skill score and the corresponding standard error of the difference between the score and the reference score are supplied. Thus the output from `veriApply` for these functions is also a list with the two components. The dimension of the components follows the input dimension as in the examples above.
 
 
 ```r
-f.crpss <- veriApply("FairCrpss", fcst=fcst, obs=obs)
-mode(f.crpss)
-#> [1] "list"
-names(f.crpss)
-#> [1] "crpss"       "crpss.sigma"
+f.crpss <- veriApply("FairCrpss", fcst=tm$fcst, obs=tm$obs)
+## some skill scores also include uncertainty information (standard errors)
+str(f.crpss)
+#> List of 2
+#>  $ crpss      : num [1:100(1d)] -0.1137 0.0582 -0.0334 0.0946 -0.0104 ...
+#>  $ crpss.sigma: num [1:100(1d)] 0.138 0.0837 0.1019 0.0777 0.0968 ...
 range(f.crpss$crpss)
-#> [1] -0.5153719  0.4158649
+#> [1] -0.2574460  0.2907086
 ```
 
 In addition to computing skill scores against climatological forecasts as the reference, arbitrary ensemble forecasts can be used as a reference. This is achieved by setting the additional argument `fcst.ref=...` to the reference forecast in `veriApply`. For example, let's evaluate the forecast against persistence (of the observations) assuming an anomaly of 0 for observation preceding the first forecast instance.
 
 
 ```r
-fcst.ref <- array(cbind(0, obs[,-ncol(obs)]), c(dim(obs), 1))
-f.crpss2 <- veriApply("FairCrpss", fcst=fcst, obs=obs, fcst.ref=fcst.ref)
+fcst.ref <- array(cbind(0, tm$obs[,-ncol(tm$obs)]), c(dim(tm$obs), 1))
+f.crpss2 <- veriApply("FairCrpss", fcst=tm$fcst, obs=tm$obs, fcst.ref=fcst.ref)
 par(mar=c(5,5,1,1))
 plot(f.crpss$crpss, f.crpss2$crpss, asp=1,
      xlab='CRPSS against climatology', ylab='CRPSS against persistence')
@@ -107,7 +118,7 @@ grid()
 abline(c(0,1))
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 
 The above plot illustrates that the single-valued persistence forecast (i.e. a delta function) is very easy to beat compared to the broad, well-calibrated, but uninformative climatology forecast (i.e. the same forecast probabilities for each forecast instance).
 

@@ -1,3 +1,8 @@
+## easyVerification 0.1.8.9000
+
+* added bug fix from Henrik Bengtsson
+* updated documentation to reflect that package is now available on CRAN
+
 ## easyVerification 0.1.8
 
 * prepared package for release on CRAN
