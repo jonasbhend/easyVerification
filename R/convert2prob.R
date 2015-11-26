@@ -21,6 +21,8 @@
 #' @param x input vector or matrix
 #' @param prob thresholds for categorical forecasts (defaults to NULL)
 #' @param threshold absolute thresholds for categorical forecasts (defaults to NULL)
+#' @param multi.model logical, are we dealing with initial condition
+#'   (the default) or multi-model ensembles (see details)?
 #' 
 #' @details
 #' In case both \code{prob} and \code{threshold} are set to \code{NULL}, the 
@@ -29,6 +31,11 @@
 #' of the full distribution (e.g. temperature above/below the median). If 
 #' \code{threshold} is set, the classes are defined based on the absolute value 
 #' (e.g. temperature above/below 13 deg. C). Multiple classes are supported. 
+#' 
+#' If \code{multi.model = TRUE}, the relative thresholds supplied by \code{prob}
+#' are ensemble member specific, i.e. are estimated for each ensemble member
+#' separately. This is in particular applicable for multi-model ensembles with
+#' model dependent biases.
 #' 
 #' @return
 #' Matrix of occurences per class (i.e. the number of ensemble members per class,
@@ -49,7 +56,7 @@
 #' 
 #' @keywords utilities
 #' @export
-convert2prob <- function(x, prob=NULL, threshold=NULL){
+convert2prob <- function(x, prob=NULL, threshold=NULL, multi.model=FALSE){
   stopifnot(is.vector(x) | is.matrix(x))
   stopifnot(any(!is.na(x)))
   if (!is.null(prob) & !is.null(threshold)){
@@ -57,15 +64,24 @@ convert2prob <- function(x, prob=NULL, threshold=NULL){
   } 
   ## convert probability to absolute threshold
   if (is.numeric(prob)){
-    threshold <- quantile(x, prob, na.rm=T, type=8)
+    if (multi.model){
+      threshold <- apply(x, 2, quantile, sort(prob), na.rm=T, type=8)
+    } else {
+      threshold <- quantile(x, sort(prob), na.rm=T, type=8)      
+    }
   }
   ## compute occurence per class
   if (is.numeric(threshold)){
-    threshold <- sort(threshold)
-    nclass <- length(threshold) + 1
-    #xtmp <- array(findInterval(x, threshold) + 1, dim(as.matrix(x)))
-    xtmp <- array(apply(sapply(threshold, function(y) c(x) > y), 1, sum), dim(as.matrix(x))) + 1
-    xout <- t(apply(xtmp, 1, tabulate, nbins=nclass))
+    nens <- ncol(as.matrix(x))
+    nclass <- nrow(as.matrix(threshold)) + 1
+    if (multi.model & !is.null(prob) & nens > 1){
+      xtmp <- array(sapply(1:nens, function(i) 
+        apply(sapply(threshold[,i], function(y) x[,i] > y), 1, sum)), 
+        dim(as.matrix(x))) + 1
+    } else {
+      xtmp <- array(apply(sapply(sort(threshold), function(y) c(x) > y), 1, sum), dim(as.matrix(x))) + 1
+    }
+    xout <- t(apply(xtmp, 1, tabulate, nbins=nclass))      
     xout[apply(as.matrix(is.na(x)), 1, any),] <- NA
   } else {
     xout <- x

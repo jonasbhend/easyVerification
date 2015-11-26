@@ -4,7 +4,7 @@
 \alias{convert2prob}
 \title{Convert to probability / categorical forecast}
 \usage{
-convert2prob(x, prob = NULL, threshold = NULL)
+convert2prob(x, prob = NULL, threshold = NULL, multi.model = FALSE)
 }
 \arguments{
 \item{x}{input vector or matrix}
@@ -12,6 +12,9 @@ convert2prob(x, prob = NULL, threshold = NULL)
 \item{prob}{thresholds for categorical forecasts (defaults to NULL)}
 
 \item{threshold}{absolute thresholds for categorical forecasts (defaults to NULL)}
+
+\item{multi.model}{logical, are we dealing with initial condition
+  (the default) or multi-model ensembles (see details)?}
 }
 \value{
 Matrix of occurences per class (i.e. the number of ensemble members per class,
@@ -27,6 +30,11 @@ set, a matrix with the number of occurences per class for a given quantile
 of the full distribution (e.g. temperature above/below the median). If
 \code{threshold} is set, the classes are defined based on the absolute value
 (e.g. temperature above/below 13 deg. C). Multiple classes are supported.
+
+If \code{multi.model = TRUE}, the relative thresholds supplied by \code{prob}
+are ensemble member specific, i.e. are estimated for each ensemble member
+separately. This is in particular applicable for multi-model ensembles with
+model dependent biases.
 }
 \examples{
 tm <- toymodel()
