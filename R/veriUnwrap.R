@@ -76,7 +76,7 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
   xmask <- apply(!is.na(x), 1, all)
   x <- x[xmask,,drop=FALSE]
   ## check whether this is a skill score or a score
-  is.skill <- tolower(substr(verifun, nchar(verifun) - 1, nchar(verifun))) == 'ss'
+  is.skill <- tolower(substr(verifun, nchar(verifun) - 1, nchar(verifun))) == 'ss' | verifun == 'CorrDiff'
   is.dress <- tolower(substr(verifun, 1, 5)) == 'dress'
   if (is.skill){
     if (nn > nens + 1){
@@ -103,6 +103,12 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
                   convert2prob(x[,nn], prob=prob, threshold=threshold), ...)          
     }
   }
+  
+  ## hack to get veriUnwrap to accept non-list named vector output
+  if (length(names(out)) == length(out)){
+    out <- as.list(out)
+  }
+  
 
   ## check whether output has to be expanded with NA
   is.expand <- !all(xmask) & (length(out) == sum(xmask) | is.list(out))

@@ -31,14 +31,16 @@ Forecast metrics are imported from the `SpecsVerification` package. Additional v
 At the time of publication these forecast skill metrics were included:
 
 1. Mean error (`EnsMe`), mean absolute error(`EnsMae`), mean squared error (`EnsMse`), and root mean squared error (`EnsRmse`) of the ensemble mean and their skill scores (e.g. `EnsRmsess`)
-2. Correlation with the ensemble mean (`EnsCorr`)
+2. Correlation with the ensemble mean (`EnsCorr` or `Corr` and `CorrDiff` from `SpecsVerification`)
 3. Spread to error ratio (`EnsSprErr`)
 4. Are under the ROC curve (`EnsRoca`) and its skill score (`EnsRocss`)
+5. The generalized discrimination score for ensemble forecasts (`Ens2AFC`)
 
 In addition, the following forecast scores from `SpecsVerification` can be used:
 
 1. Fair (`FairRps`) and standard (`EnsRps`) rank probability scores and skill scores (e.g. `FairRpss`)
 2. Fair (`FairCrps`) and standard (`EnsCrps`) continuous ranked probability scores and skill scores (e.g. `FairCrpss`)
+3. Dressed scores (`DressIgn`, `DressCrps`) and their skill scores (`DressIgnSs`, `DressCrpss`) with default ensemble dressing method ("silverman")
 
 Additional forecast verification metrics can be added by the user. This is illustrated in Section XX of this document.
 

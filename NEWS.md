@@ -1,3 +1,9 @@
+## easyVerification 0.1.8.9001
+
+* added documentation for `veriApply` (issue #4)
+* added multi-model option for relative thresholds to `convert2prob`
+* added support for named vector output in functions such as `Corr` and `CorrDiff` in `SpecsVerification`
+
 ## easyVerification 0.1.8.9000
 
 * added bug fix from Henrik Bengtsson
