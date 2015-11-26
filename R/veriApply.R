@@ -42,6 +42,18 @@
 #' of CPUs is used when \code{is.null(ncpus)} (the default).
 #' @param ... additional arguments passed to \code{verifun}
 #'   
+#' @section List of functions to be called:
+#'   The selection of verification functions supplied with this package and 
+#'   as part of \code{SpecsVerification} can be enquired using
+#'   \code{ls(pos='package:easyVerification')} and 
+#'   \code{ls(pos='package:SpecsVerification')} respectively. Please note, however, 
+#'   that only some of the functions provided as part of \code{SpecsVerification}
+#'   can be used with \code{\link{veriApply}}. Functions that can be used include
+#'   for example the (fair) ranked probability score \code{\link[SpecsVerification]{EnsRps}},
+#'   \code{\link[SpecsVerification]{FairRps}}, and its skill score \code{\link[SpecsVerification]{EnsRpss}}, 
+#'   \code{\link[SpecsVerification]{FairRpss}}, or the continuous ranked 
+#'   probability score \code{\link[SpecsVerification]{EnsCrps}}, etc.
+#' 
 #' @section Parallel processing:
 #'   Parallel processing is enabled using the \code{\link[parallel]{parallel}} 
 #'   package. Prallel verification is using \code{ncpus} \code{FORK} clusters 
