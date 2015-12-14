@@ -223,7 +223,8 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
     } 
   }
 
-  nind <- c(nens=nens, nref=nref, nobs=1, nprob=nprob, nthresh=nthresh)
+  nind <- c(nens, nref, 1, nprob, nthresh)
+  names(nind) <- c("nens", "nref", "nobs", "nprob", "nthresh")
   if (hasparallel){
     on.exit(parallel::stopCluster(.cl))
     out <- Tmatrix(parallel::parApply(cl=.cl, 

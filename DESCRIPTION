@@ -1,6 +1,6 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Datasets
-Version: 0.1.8.9002
+Version: 0.1.8.9003
 Date: 2015-12-14
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
