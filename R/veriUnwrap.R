@@ -1,6 +1,6 @@
 # veriUnwrap.R unwrap arguments to hand over to verification functions
 #
-#     Copyright (C) 2015 MeteoSwiss
+#     Copyright (C) 2016 MeteoSwiss
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by

@@ -2,9 +2,12 @@
 % Please edit documentation in R/EnsIgn.R
 \name{EnsIgn}
 \alias{EnsIgn}
+\alias{EnsIgnss}
 \title{Ignorance score}
 \usage{
 EnsIgn(ens, obs, type = 3, ...)
+
+EnsIgnss(ens, ens.ref, obs, type = 3)
 }
 \arguments{
 \item{ens}{n x j matrix of n probability forecasts for j categories}
@@ -13,16 +16,21 @@ EnsIgn(ens, obs, type = 3, ...)
 
 \item{type}{selection of plotting positions to convert ensemble counts to
   probabilities (default to 3, see \code{\link{count2prob}}}
+
+\item{ens.ref}{n x j matrix of n probability forecasts for j categories}
 }
 \description{
-Computes the ignorance score for an interpretation of the ensemble as a
-probability forecast
+Computes the ignorance score and skill score for an interpretation of
+the ensemble as a probability forecast
 }
 \examples{
 tm <- toymodel()
 
-## compute ROC area for tercile forecasts using veriApply
+## compute ignorance score for tercile forecasts
 veriApply("EnsIgn", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
+
+## compute skill score
+veriApply("EnsIgnss", fcst=tm$fcst, obs=tm$obs, prob=1:3/2)
 }
 \references{
 Wilks, D.S. (2011). Statistical methods in the atmospheric sciences (Third Edition).

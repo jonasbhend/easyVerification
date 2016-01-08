@@ -1,6 +1,6 @@
 # EnsIgn.R compute area under the ROC curve
 #
-#     Copyright (C) 2015 MeteoSwiss
+#     Copyright (C) 2016 MeteoSwiss
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -16,10 +16,13 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#' Ignorance score
+#' @name EnsIgn
+#' @aliases EnsIgnss
 #' 
-#' Computes the ignorance score for an interpretation of the ensemble as a
-#' probability forecast
+#' @title Ignorance score
+#' 
+#' @description Computes the ignorance score and skill score for an interpretation of 
+#' the ensemble as a probability forecast
 #' 
 #' @param ens n x j matrix of n probability forecasts for j categories
 #' @param obs n x j matrix of occurence of n verifying observations in j categories
@@ -35,10 +38,13 @@
 #' @examples
 #' tm <- toymodel()
 #' 
-#' ## compute ROC area for tercile forecasts using veriApply
+#' ## compute ignorance score for tercile forecasts
 #' veriApply("EnsIgn", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
 #' 
-#' @seealso \code{\link{veriApply}}, \code{\link{EnsIgnss}}, \code{\link{count2prob}}
+#' ## compute skill score
+#' veriApply("EnsIgnss", fcst=tm$fcst, obs=tm$obs, prob=1:3/2)
+#' 
+#' @seealso \code{\link{veriApply}}, \code{\link{count2prob}}
 #' 
 #' @export
 EnsIgn <- function(ens, obs, type=3, ...){
@@ -46,4 +52,22 @@ EnsIgn <- function(ens, obs, type=3, ...){
   ens.prob <- count2prob(ens, type=type)
   ign <- -log2(ens.prob[as.logical(obs)])
   return(ign)
+}
+
+#' @rdname EnsIgn
+#' 
+#' @param ens.ref n x j matrix of n probability forecasts for j categories
+#' 
+#' @export
+EnsIgnss <- function(ens, ens.ref, obs, type=3){
+  stopifnot(is.matrix(ens), is.matrix(ens.ref), 
+            is.matrix(obs), length(obs) == length(ens),
+            length(obs) == length(ens.ref))
+  xmask <- apply(!is.na(ens), 1, any) & !is.na(obs) & apply(!is.na(ens.ref), 1, any)
+  if (all(!xmask)) {
+    xout <- NA
+  } else {
+    xout <- 1 - mean(EnsIgn(ens, obs, type=type)) / mean(EnsIgn(ens.ref, obs, type=type))
+  }
+  return(xout)
 }
