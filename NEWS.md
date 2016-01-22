@@ -1,3 +1,20 @@
+## easyVerification 0.1.8.9005
+
+* replaced `EnsRoca` and `rank.ensembles` in `Ens2AFC` with C++ equivalents that are slightly faster
+* minor bugfixes
+
+## easyVerification 0.1.8.9004
+
+* updated documentation
+
+## easyVerification 0.1.8.9003
+
+* Fixed bug for conflicting names in `veriApply`
+
+## easyVerification 0.1.8.9002
+
+* Added ignorance score for probability forecasts `EnsIgn`
+
 ## easyVerification 0.1.8.9001
 
 * added documentation for `veriApply` (issue #4)

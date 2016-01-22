@@ -1,4 +1,4 @@
-# zzz.R check package version for potential updates
+# zzz.R Check Package Version for Potential Updates
 #
 #     Copyright (C) 2016 MeteoSwiss
 #

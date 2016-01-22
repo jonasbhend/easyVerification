@@ -3,7 +3,7 @@
 \name{EnsIgn}
 \alias{EnsIgn}
 \alias{EnsIgnss}
-\title{Ignorance score}
+\title{Ignorance Score}
 \usage{
 EnsIgn(ens, obs, type = 3, ...)
 
@@ -12,16 +12,21 @@ EnsIgnss(ens, ens.ref, obs, type = 3)
 \arguments{
 \item{ens}{n x j matrix of n probability forecasts for j categories}
 
-\item{obs}{n x j matrix of occurence of n verifying observations in j categories}
+\item{obs}{n x j matrix of occurence of n verifying observations in j
+categories}
 
 \item{type}{selection of plotting positions to convert ensemble counts to
-  probabilities (default to 3, see \code{\link{count2prob}}}
+probabilities (default to 3, see \code{\link{count2prob}}}
+
+\item{...}{additional arguments for consistency with other functions (not
+  used)}
 
 \item{ens.ref}{n x j matrix of n probability forecasts for j categories}
 }
 \description{
-Computes the ignorance score and skill score for an interpretation of
-the ensemble as a probability forecast
+Computes the ignorance score \code{EnsIgn} and skill score
+  \code{EnsIgnss} for an interpretation of the ensemble as a probability
+  forecast
 }
 \examples{
 tm <- toymodel()
@@ -30,15 +35,15 @@ tm <- toymodel()
 veriApply("EnsIgn", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
 
 ## compute skill score
-veriApply("EnsIgnss", fcst=tm$fcst, obs=tm$obs, prob=1:3/2)
+veriApply("EnsIgnss", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
 }
 \references{
-Wilks, D.S. (2011). Statistical methods in the atmospheric sciences (Third Edition).
-Academic press.
-Jolliffe, I.T. and D.B. Stephenson (2012). Forecast Verification. A Practitioner's Guide
-in Atmospheric Science. Wiley-Blackwell.
+Wilks, D.S. (2011). Statistical methods in the atmospheric
+  sciences (Third Edition). Academic press. Jolliffe, I.T. and D.B.
+  Stephenson (2012). Forecast Verification. A Practitioner's Guide in
+  Atmospheric Science. Wiley-Blackwell.
 }
 \seealso{
-\code{\link{veriApply}}, \code{\link{EnsIgnss}}, \code{\link{count2prob}}
+\code{\link{veriApply}}, \code{\link{count2prob}}
 }
 

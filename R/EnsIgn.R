@@ -1,4 +1,4 @@
-# EnsIgn.R compute area under the ROC curve
+# EnsIgn.R Ignorance Score
 #
 #     Copyright (C) 2016 MeteoSwiss
 #
@@ -18,23 +18,26 @@
 
 #' @name EnsIgn
 #' @aliases EnsIgnss
-#' 
-#' @title Ignorance score
-#' 
-#' @description Computes the ignorance score and skill score for an interpretation of 
-#' the ensemble as a probability forecast
-#' 
+#'   
+#' @title Ignorance Score
+#'   
+#' @description Computes the ignorance score \code{EnsIgn} and skill score 
+#'   \code{EnsIgnss} for an interpretation of the ensemble as a probability 
+#'   forecast
+#'   
 #' @param ens n x j matrix of n probability forecasts for j categories
-#' @param obs n x j matrix of occurence of n verifying observations in j categories
+#' @param obs n x j matrix of occurence of n verifying observations in j 
+#'   categories
 #' @param type selection of plotting positions to convert ensemble counts to 
 #'   probabilities (default to 3, see \code{\link{count2prob}}
-#' 
-#' @references 
-#' Wilks, D.S. (2011). Statistical methods in the atmospheric sciences (Third Edition). 
-#' Academic press. 
-#' Jolliffe, I.T. and D.B. Stephenson (2012). Forecast Verification. A Practitioner's Guide
-#' in Atmospheric Science. Wiley-Blackwell.
-#' 
+#' @param ... additional arguments for consistency with other functions (not
+#'   used)
+#'   
+#' @references Wilks, D.S. (2011). Statistical methods in the atmospheric 
+#'   sciences (Third Edition). Academic press. Jolliffe, I.T. and D.B.
+#'   Stephenson (2012). Forecast Verification. A Practitioner's Guide in
+#'   Atmospheric Science. Wiley-Blackwell.
+#'   
 #' @examples
 #' tm <- toymodel()
 #' 
@@ -42,10 +45,10 @@
 #' veriApply("EnsIgn", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
 #' 
 #' ## compute skill score
-#' veriApply("EnsIgnss", fcst=tm$fcst, obs=tm$obs, prob=1:3/2)
+#' veriApply("EnsIgnss", fcst=tm$fcst, obs=tm$obs, prob=1:2/3)
 #' 
 #' @seealso \code{\link{veriApply}}, \code{\link{count2prob}}
-#' 
+#'   
 #' @export
 EnsIgn <- function(ens, obs, type=3, ...){
   stopifnot(is.matrix(ens), is.matrix(obs), length(obs) == length(ens))

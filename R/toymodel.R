@@ -1,4 +1,4 @@
-# veriApply.R apply verification metrics to large datasets
+# toymodel.R Create Example Forecast-observation Pairs
 #
 #     Copyright (C) 2016 MeteoSwiss
 #
@@ -19,7 +19,7 @@
 #' @name toymodel
 #' @aliases toyarray
 #' 
-#' @title Create example forecast-observation pairs
+#' @title Create Example Forecast-Observation Pairs
 #' 
 #' @description
 #' This toy model lets you create forecast-observation pairs with specified 

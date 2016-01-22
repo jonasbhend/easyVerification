@@ -1,4 +1,4 @@
-# veriUnwrap.R unwrap arguments to hand over to verification functions
+# veriUnwrap.R Unwrap Arguments to Hand Over to Verification Functions
 #
 #     Copyright (C) 2016 MeteoSwiss
 #
@@ -16,10 +16,10 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#' Unwrap arguments and hand over to function
+#' Unwrap Arguments and Hand Over to Verification Function
 #' 
-#' decomposes input argument into forecast and verifying observations and hands 
-#' these over to the function provided
+#' Decomposes input arguments into forecast, verifying observations, and
+#' reference forecast and hands these over to the function provided.
 #' 
 #' @param x n x k + 1 matrix with n forecasts of k ensemble members plus the 
 #'   verifying observations
@@ -41,9 +41,9 @@
 #'   forecast is provided (i.e. \code{ncol(x) == nens + 1}), a climatological 
 #'   forecast is constructed from the \code{n} verifying observations.
 #'   
-#'   The elements of vector \code{nind} have to be named with \code{nens}
-#'   containing the number of ensemble members, \code{nref} the number of
-#'   ensemble members in the reference forecast for skill scores, \code{nobs}
+#'   The elements of vector \code{nind} have to be named with \code{nens} 
+#'   containing the number of ensemble members, \code{nref} the number of 
+#'   ensemble members in the reference forecast for skill scores, \code{nobs} 
 #'   the number of observations (only one supported), \code{nprob} the number of
 #'   probability thresholds, and \code{nthresh} the number of absolute threshold
 #'   for conversion of continuous forecasts to category forecasts.

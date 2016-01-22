@@ -1,4 +1,4 @@
-# convert2prob.R convert to probability / categorical forecast
+# convert2prob.R Convert to Category Forecast
 #
 #     Copyright (C) 2016 MeteoSwiss
 #
@@ -16,30 +16,35 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#' Convert to probability / categorical forecast
+#' Convert to Probability / Category Forecast
+#' 
+#' Converts the continuous ensemble forecast to counts of ensemble members per
+#' category. The categories can be defined relative to the ensemble distribution
+#' (using \code{prob}) or relative to absolute values for the category
+#' thresholds (using \code{threshold}, see details).
 #' 
 #' @param x input vector or matrix
 #' @param prob thresholds for categorical forecasts (defaults to NULL)
-#' @param threshold absolute thresholds for categorical forecasts (defaults to NULL)
-#' @param multi.model logical, are we dealing with initial condition
-#'   (the default) or multi-model ensembles (see details)?
-#' 
-#' @details
-#' In case both \code{prob} and \code{threshold} are set to \code{NULL}, the 
-#' function returns the input \code{x} without modification. If \code{prob} is
-#' set, a matrix with the number of occurences per class for a given quantile
-#' of the full distribution (e.g. temperature above/below the median). If 
-#' \code{threshold} is set, the classes are defined based on the absolute value 
-#' (e.g. temperature above/below 13 deg. C). Multiple classes are supported. 
+#' @param threshold absolute thresholds for categorical forecasts (defaults to
+#'   NULL)
+#' @param multi.model logical, are we dealing with initial condition (the
+#'   default) or multi-model ensembles (see details)?
+#'   
+#' @details In case both \code{prob} and \code{threshold} are set to
+#' \code{NULL}, the function returns the input \code{x} without modification. If
+#' \code{prob} is set, a matrix with the number of occurences per class for a
+#' given quantile of the full distribution (e.g. temperature above/below the
+#' median). If \code{threshold} is set, the classes are defined based on the
+#' absolute value (e.g. temperature above/below 13 deg. C). Multiple classes are
+#' supported.
 #' 
 #' If \code{multi.model = TRUE}, the relative thresholds supplied by \code{prob}
-#' are ensemble member specific, i.e. are estimated for each ensemble member
-#' separately. This is in particular applicable for multi-model ensembles with
+#' are ensemble member specific, i.e. are estimated for each ensemble member 
+#' separately. This is in particular applicable for multi-model ensembles with 
 #' model dependent biases.
 #' 
-#' @return
-#' Matrix of occurences per class (i.e. the number of ensemble members per class,
-#' or an indicator for the observations)
+#' @return Matrix of occurences per class (i.e. the number of ensemble members
+#' per class, or an indicator for the observations)
 #' 
 #' @examples
 #' tm <- toymodel()
@@ -53,7 +58,7 @@
 #' convert2prob(tm$obs, threshold=1)[1,]
 #' 
 #' @seealso \code{\link{veriApply}}
-#' 
+#'   
 #' @keywords utilities
 #' @export
 convert2prob <- function(x, prob=NULL, threshold=NULL, multi.model=FALSE){

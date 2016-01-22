@@ -1,4 +1,4 @@
-# EnsRocss.R compute ROC area skill scores
+# EnsRocss.R ROC Area Skill Score
 #
 #     Copyright (C) 2016 MeteoSwiss
 #
@@ -16,7 +16,7 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#' Skill score for area under the ROC curve
+#' Skill Score for Area under the ROC Curve
 #' 
 #' Computes the skill score for the area under the ROC curve compared to an 
 #' arbitrary reference forecast (generally climatological forecast).

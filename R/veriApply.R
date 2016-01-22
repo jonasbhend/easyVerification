@@ -1,4 +1,4 @@
-# veriApply.R apply verification metrics to large datasets
+# veriApply.R Apply Verification Metrics to Large Datasets
 #
 #     Copyright (C) 2016 MeteoSwiss
 #
@@ -16,10 +16,10 @@
 #     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#' Apply verification metrics to large datasets
+#' Apply Verification Metrics to Large Datasets
 #' 
 #' This wrapper applies verification metrics to arrays of forecast ensembles and
-#' verifying observations. Various formats array-based formats are supported.
+#' verifying observations. Various array-based data formats are supported.
 #' Additionally, continuous forecasts (and observations) are transformed to
 #' category forecasts using user-defined absolute thresholds or percentiles of
 #' the long-term climatology (see details).
