@@ -1,30 +1,13 @@
-## easyVerification 0.1.8.9005
+## easyVerification 0.2.0
 
+* Added ignorance score for probability forecasts `EnsIgn` and skill score `EnsIgnss`
 * replaced `EnsRoca` and `rank.ensembles` in `Ens2AFC` with C++ equivalents that are slightly faster
-* minor bugfixes
-
-## easyVerification 0.1.8.9004
-
-* updated documentation
-
-## easyVerification 0.1.8.9003
-
-* Fixed bug for conflicting names in `veriApply`
-
-## easyVerification 0.1.8.9002
-
-* Added ignorance score for probability forecasts `EnsIgn`
-
-## easyVerification 0.1.8.9001
-
 * added documentation for `veriApply` (issue #4)
 * added multi-model option for relative thresholds to `convert2prob`
-* added support for named vector output in functions such as `Corr` and `CorrDiff` in `SpecsVerification`
-
-## easyVerification 0.1.8.9000
-
-* added bug fix from Henrik Bengtsson
-* updated documentation to reflect that package is now available on CRAN
+* added support for named vector output in functions such as `Corr` and `CorrDiff` from `SpecsVerification`
+* added bug fix from Henrik Bengtsson (pull request #3)
+* updated documentation also to reflect that package is now available on CRAN
+* minor bugfixes
 
 ## easyVerification 0.1.8
 
