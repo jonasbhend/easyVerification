@@ -5,7 +5,5 @@
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs.
 
-Please note, however, that this is the initial submission of the package.
-
 ## Downstream dependencies
-As this is the initial submission, there are no downstream dependencies.
+There are no downstream dependencies (checked with devtools::revdep_check()).

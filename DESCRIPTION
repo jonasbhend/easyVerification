@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Datasets
 Version: 0.1.8.9005
-Date: 2016-01-22
+Date: 2016-01-25
 Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     role = c("aut", "cre")),
     person("Jacopo", "Ripoldi", role="ctb"),
@@ -14,7 +14,7 @@ Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     person("Joaqu\'in", "Bedia Jimenez", role='ctb'),
     person("Matteo", "De Felice", role='ctb'))
 Description: Set of tools to simplify application of atomic forecast verification
-    metrics for (comparative) verification of ensemble forecasts to large datasets.
+    metrics for (comparative) verification of ensemble forecasts to large data sets.
     The forecast metrics are imported from the 'SpecsVerification' package, and
     additional forecast metrics are provided with this package. Alternatively,
     new user-defined forecast scores can be implemented using the example scores
