@@ -1,3 +1,7 @@
+## easyVerification 0.2.0.9001
+
+* fixed bug in `convert2prob` for climatological forecasts (reduced set of values to compute percentile boundaries for consistency)
+
 ## easyVerification 0.2.0
 
 * Added ignorance score for probability forecasts `EnsIgn` and skill score `EnsIgnss`
