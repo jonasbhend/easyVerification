@@ -19,9 +19,9 @@
 #' Apply Verification Metrics to Large Datasets
 #' 
 #' This wrapper applies verification metrics to arrays of forecast ensembles and
-#' verifying observations. Various array-based data formats are supported.
-#' Additionally, continuous forecasts (and observations) are transformed to
-#' category forecasts using user-defined absolute thresholds or percentiles of
+#' verifying observations. Various array-based data formats are supported. 
+#' Additionally, continuous forecasts (and observations) are transformed to 
+#' category forecasts using user-defined absolute thresholds or percentiles of 
 #' the long-term climatology (see details).
 #' 
 #' @param verifun Name of function to compute verification metric (score, skill 
@@ -36,71 +36,122 @@
 #' @param threshold absolute threshold for category forecasts (see below)
 #' @param na.rm logical, should incomplete forecasts be used?
 #' @param parallel logical, should pararllel execution of verification be used 
-#' (see below)?
+#'   (see below)?
 #' @param maxncpus upper bound for self-selected number of CPUs
-#' @param ncpus number of CPUs used in parallel computation, self-selected number
-#' of CPUs is used when \code{is.null(ncpus)} (the default).
+#' @param ncpus number of CPUs used in parallel computation, self-selected 
+#'   number of CPUs is used when \code{is.null(ncpus)} (the default).
+#' @param ref.opts string or list with specifications for the reference forecast
+#'   (see below and \code{\link{veriUnwrap}})
 #' @param ... additional arguments passed to \code{verifun}
 #'   
-#' @section List of functions to be called:
-#'   The selection of verification functions supplied with this package and 
-#'   as part of \code{SpecsVerification} can be enquired using
+#' @section List of functions to be called: The selection of verification 
+#'   functions supplied with this package and as part of 
+#'   \code{SpecsVerification} can be enquired using 
 #'   \code{ls(pos='package:easyVerification')} and 
-#'   \code{ls(pos='package:SpecsVerification')} respectively. Please note, however, 
-#'   that only some of the functions provided as part of \code{SpecsVerification}
-#'   can be used with \code{\link{veriApply}}. Functions that can be used include
-#'   for example the (fair) ranked probability score \code{\link[SpecsVerification]{EnsRps}},
-#'   \code{\link[SpecsVerification]{FairRps}}, and its skill score \code{\link[SpecsVerification]{EnsRpss}}, 
+#'   \code{ls(pos='package:SpecsVerification')} respectively. Please note, 
+#'   however, that only some of the functions provided as part of 
+#'   \code{SpecsVerification} can be used with \code{\link{veriApply}}. 
+#'   Functions that can be used include for example the (fair) ranked 
+#'   probability score \code{\link[SpecsVerification]{EnsRps}}, 
+#'   \code{\link[SpecsVerification]{FairRps}}, and its skill score 
+#'   \code{\link[SpecsVerification]{EnsRpss}}, 
 #'   \code{\link[SpecsVerification]{FairRpss}}, or the continuous ranked 
 #'   probability score \code{\link[SpecsVerification]{EnsCrps}}, etc.
-#' 
-#' @section Parallel processing:
-#'   Parallel processing is enabled using the \code{\link[parallel]{parallel}} 
-#'   package. Prallel verification is using \code{ncpus} \code{FORK} clusters 
-#'   or, if \code{ncpus} are not specified, one less than the autodetected
-#'   number of cores. The maximum number of cores used for parallel processing
-#'   with autodetection of the number of available cores can be set with the 
-#'   \code{maxncpus} argument.
 #'   
-#'   Progress bars are available for non-parallel computation of the
-#'   verification metrics. Please note, however, that the progress bar only
-#'   indicates the time of computation needed for the actual verification
-#'   metrics, input and output re-arrangement is not included in the progress
-#'   bar.
-#'   
-#' @section Conversion to category forecasts:
-#'   To automatically convert continuous forecasts into category
-#'   forecasts, absolute (\code{threshold}) or relative thresholds (\code{prob})
-#'   have to be supplied. For some scores and skill scores (e.g. the ROC area
-#'   and skill score), a list of categories will be supplied with categories
-#'   ordered. That is, if \code{prob = 1:2/3} for tercile forecasts, \code{cat1}
-#'   corresponds to the lower tercile, \code{cat2} to the middle, and
-#'   \code{cat3} to the upper tercile.
+#' @section Conversion to category forecasts: To automatically convert 
+#'   continuous forecasts into category forecasts, absolute (\code{threshold}) 
+#'   or relative thresholds (\code{prob}) have to be supplied. For some scores 
+#'   and skill scores (e.g. the ROC area and skill score), a list of categories 
+#'   will be supplied with categories ordered. That is, if \code{prob = 1:2/3} 
+#'   for tercile forecasts, \code{cat1} corresponds to the lower tercile, 
+#'   \code{cat2} to the middle, and \code{cat3} to the upper tercile.
 #'   
 #'   Absolute and relative thresholds can be supplied in various formats. If a 
-#'   vector of thresholds is supplied with the \code{threshold} argument, the
-#'   same threshold is applied to all forecasts (e.g. lead times, spatial
-#'   locations). If a vector of relative thresholds is supplied using
-#'   \code{prob}, the category boundaries to be applied are computed separately
-#'   for each space-time location. Relative boundaries specified using
+#'   vector of thresholds is supplied with the \code{threshold} argument, the 
+#'   same threshold is applied to all forecasts (e.g. lead times, spatial 
+#'   locations). If a vector of relative thresholds is supplied using 
+#'   \code{prob}, the category boundaries to be applied are computed separately 
+#'   for each space-time location. Relative boundaries specified using 
 #'   \code{prob} are computed separately for the observations and forecasts, but
 #'   jointly for all available ensemble members.
 #'   
 #'   Location specific thresholds can also be supplied. If the thresholds are 
 #'   supplied as a matrix, the number of rows has to correspond to the number of
-#'   forecast space-time locations (i.e. same length as
-#'   \code{length(fcst)/prod(dim(fcst)[c(tdim, ensdim)])}). Alternatively, but
-#'   equivalently, the thresholds can also be supplied with the dimensionality
+#'   forecast space-time locations (i.e. same length as 
+#'   \code{length(fcst)/prod(dim(fcst)[c(tdim, ensdim)])}). Alternatively, but 
+#'   equivalently, the thresholds can also be supplied with the dimensionality 
 #'   correpsonding to the \code{obs} array with the difference that the forecast
-#'   dimension in \code{obs} contains the category boundaries (absolute or
+#'   dimension in \code{obs} contains the category boundaries (absolute or 
 #'   relative) and thus may differ in length.
 #'   
-#' @note If the forecasts and observations are only available as category probabilities (or 
-#'   ensemble counts as used in \code{SpecsVerification}) as opposed to as continuous numeric variables, \code{veriApply} 
-#'   cannot be used but the atomic verification functions for category forecasts
-#'   have to be applied directly. 
+#' @section Out-of-sample reference forecasts:\code{ref.opts} specifies the 
+#'   set-up of the climatological reference forecast for skill scores if no 
+#'   explicit reference forecast is provided. \code{ref.opts} can be either set 
+#'   to \code{NULL}, that is all available observations are used as equiprobable
+#'   members of a reference forecast, or a list with \code{n} elements 
+#'   containing the indices of the observations to be used to construct the 
+#'   reference forecast for forecast \code{n} can be provided. The indices 
+#'   provided have to be non-missing and in the range of \code{1} to \code{n} of
+#'   the verifying observations.
 #'   
-#' @seealso \code{\link{convert2prob}} for conversion of continuous into category forecasts (and observations)
+#'   In addition, the following standard approaches to generate out-of-sample 
+#'   reference forecasts are supported by keyword or shortlist. Leave-one-out 
+#'   reference forecasts can be produced by \code{ref.opts = "crossval"} or 
+#'   \code{ref.opts = list(crossval=TRUE, blocklength=1)}. 
+#'   Leave-moving-blocks-out forecasts can be produced by setting \code{ref.opts
+#'   = list(crossval=TRUE, blocklength=n)}, where \code{n} is the number of 
+#'   observations around the forecast that are not used in the reference 
+#'   forecast.
+#'   
+#'   Correspondingly, reference forecasts that are only based on past (future) 
+#'   observations can be produced using \code{ref.opts = "forward"} or 
+#'   \code{ref.opts = list(forward=TRUE)}. For the \code{forward} method, the 
+#'   first half of the reference forecasts only uses future information, i.e. 
+#'   observations \code{2:n} for forecast \code{1}, \code{3:n} for \code{2} and 
+#'   so forth. The second half of the reference forecasts use only past 
+#'   observations, i.e. observations \code{1:(n-1)} for forecast \code{n}, 
+#'   \code{1:(n-2)} for \code{n-1}, etc.
+#'   
+#'   In combination with the above, a subset of the observations can be 
+#'   specified for use as reference forecasts by providing the explicit indices 
+#'   of the observations to be used via \code{ref.opts = list(..., 
+#'   indices=1:k)}. In combination with the \code{forward} method, all
+#'   observations in \code{ref.opts$indices} will be used to construct the
+#'   reference forecast for forecasts not included in \code{ref.opts$indices}.
+#'   In combination with the \code{crossval} method with \code{blocklength > 1},
+#'   observations are used for the reference forecasts that are included in
+#'   \code{ref.opts$indices}, but not in the block around the forecast index,
+#'   where this block is defined on all indices and not on the indices supplied
+#'   by \code{ref.opts$indices}.
+#'   
+#' @section Parallel processing: Parallel processing is enabled using the 
+#'   \code{\link[parallel]{parallel}} package. Prallel verification is using 
+#'   \code{ncpus} \code{FORK} clusters or, if \code{ncpus} are not specified, 
+#'   one less than the autodetected number of cores. The maximum number of cores
+#'   used for parallel processing with autodetection of the number of available 
+#'   cores can be set with the \code{maxncpus} argument.
+#'   
+#'   Progress bars are available for non-parallel computation of the 
+#'   verification metrics. Please note, however, that the progress bar only 
+#'   indicates the time of computation needed for the actual verification 
+#'   metrics, input and output re-arrangement is not included in the progress 
+#'   bar.
+#'   
+#' @note If the forecasts and observations are only available as category 
+#'   probabilities (or ensemble counts as used in \code{SpecsVerification}) as 
+#'   opposed to as continuous numeric variables, \code{veriApply} cannot be used
+#'   but the atomic verification functions for category forecasts have to be 
+#'   applied directly.
+#'   
+#'   Out-of-sample reference forecasts are not fully supported for 
+#'   categorical forecasts defined on the distribution of forecast values (e.g. 
+#'   using the argument \code{prob}). Whereas only the years specified in 
+#'   \code{ref.opts} are used for the reference forecasts, the probability 
+#'   thresholds for the reference forecasts are defined on the collection of
+#'   years specified in \code{ref.opts}.
+#'   
+#' @seealso \code{\link{convert2prob}} for conversion of continuous into 
+#'   category forecasts (and observations)
 #'   
 #' @examples
 #' tm <- toyarray()
@@ -119,7 +170,7 @@
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
                       ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, maxncpus=16, ncpus = NULL, ...){
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, ref.opts=NULL, ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -154,6 +205,40 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   nref <- if (!is.null(fcst.ref)) tail(dim(fcst.ref), 1) else 0
   ntim <- head(tail(dim(fcst), 2), 1)
   nrest <- length(obs)/ntim
+  
+  ## deparse ref.opts
+  if (is.null(fcst.ref) & !is.null(ref.opts)){
+    if (is.null(prob) & is.null(threshold)) {
+      if (is.list(ref.opts)){
+        achoice <- c("crossval", "forward", "blocklength", "indices")
+        rargs <- sapply(names(ref.opts), match.arg, achoice)
+        if (any(rargs %in% achoice)){
+          names(ref.opts) <- rargs
+          if (is.null(ref.opts$crossval)) ref.opts$crossval <- FALSE
+          if (is.null(ref.opts$forward)) ref.opts$forward <- FALSE
+          ind <- if (!is.null(ref.opts$indices)) ref.opts$indices else 1:ntim
+          block <- if (is.null(ref.opts$blocklength)) 1 else ref.opts$blocklength
+          if (ref.opts$crossval & !ref.opts$forward) {
+            ref.opts <- lapply(1:ntim, function(x) setdiff(ind, x + seq(-((block - 1) %/% 2), block %/% 2)))
+          }  else if (ref.opts$forward & !ref.opts$crossval) {
+            ref.opts <- lapply(1:ntim, function(x) ind)
+            ref.opts[ind] <- lapply(seq(along=ind), function(x) ind[seq(if (x > length(ind) %/% 2) 1 else x + 1, if (x > length(ind) %/% 2) x - 1 else length(ind))])
+          } else {
+            ref.opts <- lapply(1:ntim, function(x) ind)
+          }        
+        }
+      } else if (is.character(ref.opts)){
+        if (ref.opts == 'crossval') {
+          ref.opts <- lapply(1:ntim, function(x) setdiff(1:ntim, x))
+        } else if (ref.opts == 'forward') {
+          ref.opts <- lapply(1:ntim, function(x) seq(if (x > ntim %/% 2) 1 else x + 1, if (x > ntim %/% 2) x - 1 else ntim))
+        }
+      }
+    } else {
+      warning("Out-of-sample climatological reference forecasts are not yet supported for categorical forecasts") 
+    }
+  } 
+  
   
   ## dimensions of prob or threshold
   if (is.null(prob)){
@@ -222,6 +307,13 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
       if (! 'try-error' %in% class(.cl)) hasparallel <- TRUE      
     } 
   }
+  
+  ## fix for FairRpss against climatological reference forecast with category
+  ## boundaries defined on distribution of verifying observations
+  if (verifun == 'FairRpss' & !is.null(prob) & is.null(ref.opts)){
+    verifun <- 'climFairRpss'
+    message("Please note that FairRpss is computed without ensemble-size correction for the climatological reference forecast, as categories are based on quantiles of the observations and forecast probabilities are therefore known.")
+  }
 
   nind <- c(nens, nref, 1, nprob, nthresh)
   names(nind) <- c("nens", "nref", "nobs", "nprob", "nthresh")
@@ -233,6 +325,7 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
                             FUN=veriUnwrap, 
                             verifun=verifun, 
                             nind=nind,
+                            ref.opts=ref.opts,
                             ...))    
         
   } else {
@@ -241,6 +334,7 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
                          FUN=veriUnwrap, 
                          verifun=verifun, 
                          nind=nind,
+                         ref.opts=ref.opts,
                          ...))    
   }
   

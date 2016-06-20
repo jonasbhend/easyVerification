@@ -18,7 +18,7 @@
 
 #' Unwrap Arguments and Hand Over to Verification Function
 #' 
-#' Decomposes input arguments into forecast, verifying observations, and
+#' Decomposes input arguments into forecast, verifying observations, and 
 #' reference forecast and hands these over to the function provided.
 #' 
 #' @param x n x k + 1 matrix with n forecasts of k ensemble members plus the 
@@ -27,11 +27,14 @@
 #' @param nind named vector with number of ensemble members, ensemble members of
 #'   reference forecasts, observations (defaults to 1), probability or absolute 
 #'   thresholds (see details)
+#' @param ref.opts string or list with specifications for the reference forecast
+#'   (see details)
 #' @param ... additional arguments passed on to \code{verifun}
 #'   
-#' @details Only forecasts with non-missing observation and complete ensembles 
-#'   are computed. All other forecasts are set to missing. For aggregate metrics
-#'   (e.g. skill scores) the metric is computed over non-missing 
+#' @details Forecast verification metrics are only computed for forecasts with 
+#'   non-missing verifying observation and at least one non-missing ensemble 
+#'   member. Metrics for all other forecasts are set to missing. For aggregate 
+#'   metrics (e.g. skill scores) the metric is computed over non-missing 
 #'   observation/forecast pairs only.
 #'   
 #'   For computation of skill scores, reference forecasts can be provided. That 
@@ -48,9 +51,25 @@
 #'   probability thresholds, and \code{nthresh} the number of absolute threshold
 #'   for conversion of continuous forecasts to category forecasts.
 #'   
+#'   \code{ref.opts} specifies the set-up of the climatological reference 
+#'   forecast for skill scores if no explicit reference forecast is provided. 
+#'   This can be either \code{NULL}, all available observations are used as 
+#'   equiprobable members of a reference forecast, or a list with \code{n} 
+#'   elements containing the indices of the observations to be used to construct
+#'   the reference forecast for forecast \code{n}. The indices provided have to 
+#'   be non-missing and in the range of \code{1} to \code{n} of the verifying 
+#'   observations.
+#'   
+#' @note Out-of-sample reference forecasts are not fully supported for 
+#'   categorical forecasts defined on the distribution of forecast values (e.g. 
+#'   using the argument \code{prob}). Whereas only the years specified in 
+#'   \code{ref.opts} are used for the reference forecasts, the probability 
+#'   thresholds for the reference forecasts are defined on the collection of
+#'   years specified in \code{ref.opts}.
+#'   
 #' @seealso \code{\link{veriApply}}
 #'   
-veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, nprob=0, nthresh=0), ...){
+veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, nprob=0, nthresh=0), ref.opts=NULL, ...){
   nens <- nind['nens']
   nref <- nind['nref']
   nobs <- nind['nobs']
@@ -76,13 +95,21 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
   xmask <- apply(!is.na(x), 1, all)
   x <- x[xmask,,drop=FALSE]
   ## check whether this is a skill score or a score
-  is.skill <- tolower(substr(verifun, nchar(verifun) - 1, nchar(verifun))) == 'ss' | verifun == 'CorrDiff'
+  is.skill <- tolower(substr(verifun, nchar(verifun) - 1, nchar(verifun))) == 'ss' | substr(verifun, nchar(verifun) - 3, nchar(verifun)) == 'Diff'
   is.dress <- tolower(substr(verifun, 1, 5)) == 'dress'
   if (is.skill){
     if (nn > nens + 1){
       xref <- x[,-c(1:nens, nn), drop=F]
     } else {
-      xref <- t(array(x[,nn], c(nrow(x), nrow(x))))      
+      ## build reference forecast according to specifications in ref.opts
+      if (is.null(ref.opts)){
+        xref <- t(array(x[,nn], c(nrow(x), nrow(x))))              
+      } else if (is.list(ref.opts) & length(ref.opts) == nrow(x) & 
+                   range(ref.opts)[1] >= 1 & range(ref.opts)[2] <= nrow(x)){
+        xobs <- x[,nn]
+        maxn <- max(sapply(ref.opts, length))
+        xref <- t(sapply(ref.opts, function(x) xobs[c(x, rep(NA, maxn - length(x)))]))
+      }
     }
     if (is.dress){
       out <- vfun(SpecsVerification::DressEnsemble(x[,1:nens]),

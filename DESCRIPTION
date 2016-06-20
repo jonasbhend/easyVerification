@@ -1,9 +1,11 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Data Sets
-Version: 0.2.0.9001
-Date: 2016-02-01
-Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
-    role = c("aut", "cre")),
+Version: 0.2.0.9003
+Date: 2016-06-17
+Authors@R: c(person("MeteoSwiss",
+    role=c("aut", "cph")),
+    person("Jonas", "Bhend",  role = c("cre"), 
+    email='jonas.bhend@meteoswiss.ch'),
     person("Jacopo", "Ripoldi", role="ctb"),
     person("Claudia", "Mignani", role="ctb"),
     person("Irina", "Mahlstein", role="ctb"),
@@ -13,19 +15,19 @@ Authors@R: c(person("Jonas", "Bhend", email = "jonas.bhend@meteoswiss.ch",
     person("Andreas", "Weigel", role="ctb"),
     person("Joaqu\'in", "Bedia Jimenez", role='ctb'),
     person("Matteo", "De Felice", role='ctb'))
-Description: Set of tools to simplify application of atomic forecast verification
-    metrics for (comparative) verification of ensemble forecasts to large data sets.
-    The forecast metrics are imported from the 'SpecsVerification' package, and
-    additional forecast metrics are provided with this package. Alternatively,
-    new user-defined forecast scores can be implemented using the example scores
-    provided and applied using the functionality of this package.
+Description: Set of tools to simplify application of atomic forecast
+    verification metrics for (comparative) verification of ensemble forecasts
+    to large data sets. The forecast metrics are imported from the
+    'SpecsVerification' package, and additional forecast metrics are provided
+    with this package. Alternatively, new user-defined forecast scores can be
+    implemented using the example scores provided and applied using the
+    functionality of this package.
 Depends:
     R (>= 3.0),
     SpecsVerification,
     stats,
     utils
 Imports:
-    RCurl,
     pbapply,
     Rcpp
 Suggests:
@@ -38,5 +40,5 @@ License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
 URL: http://www.meteoswiss.ch
-BugReports: https://github.com/MeteoSwiss/easyVerification/issues
 VignetteBuilder: knitr, R.rsp
+RoxygenNote: 5.0.1
