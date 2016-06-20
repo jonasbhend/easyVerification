@@ -94,6 +94,7 @@ test_that('Reference forecasts', {
                veriApply("FairCrpss", fcst=fcst, obs=obs, ref.opts=ro.subcross))
   expect_equal(veriApply("FairRpss", fcst=fcst, obs=obs, prob=1:2/3),
                veriApply("climFairRpss", fcst=fcst, obs=obs, prob=1:2/3))
-  expect_true(all(unlist(veriApply("FairRpss", fcst=fcst, obs=obs, threshold=0)) != unlist(veriApply("climFairRpss", fcst=fcst, obs=obs, threshold=0))))
+  expect_message(veriApply("FairRpss", fcst=fcst, obs=obs, prob=1:2/3))
+  expect_false(all(unlist(veriApply("FairRpss", fcst=fcst, obs=obs, threshold=0)) == unlist(veriApply("climFairRpss", fcst=fcst, obs=obs, threshold=0))))
 })
 
