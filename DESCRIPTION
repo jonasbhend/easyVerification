@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Data Sets
-Version: 0.2.0.9003
-Date: 2016-06-17
+Version: 0.2.0.9004
+Date: 2016-07-21
 Authors@R: c(person("MeteoSwiss",
     role=c("aut", "cph")),
     person("Jonas", "Bhend",  role = c("cre"), 
@@ -33,8 +33,10 @@ Imports:
 Suggests:
     testthat,
     knitr,
+    rmarkdown,
     parallel,
-    R.rsp
+    R.rsp,
+    verification
 LinkingTo: Rcpp
 License: GPL-3
 Copyright: MeteoSwiss

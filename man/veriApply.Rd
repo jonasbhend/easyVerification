@@ -7,7 +7,7 @@
 veriApply(verifun, fcst, obs, fcst.ref = NULL, tdim = length(dim(fcst)) - 1,
   ensdim = length(dim(fcst)), prob = NULL, threshold = NULL,
   na.rm = FALSE, parallel = FALSE, maxncpus = 16, ncpus = NULL,
-  ref.opts = NULL, ...)
+  ref.opts = "none", ...)
 }
 \arguments{
 \item{verifun}{Name of function to compute verification metric (score, skill 
@@ -38,8 +38,9 @@ scores only)}
 \item{ncpus}{number of CPUs used in parallel computation, self-selected 
 number of CPUs is used when \code{is.null(ncpus)} (the default).}
 
-\item{ref.opts}{string or list with specifications for the reference forecast
-(see below and \code{\link{veriUnwrap}})}
+\item{ref.opts}{type of out-of-sample reference forecasts or  namelist with 
+arguments as in \code{\link{indRef}} or list of indices for each 
+forecast instance}
 
 \item{...}{additional arguments passed to \code{verifun}}
 }
@@ -111,43 +112,16 @@ If the forecasts and observations are only available as category
 \section{Out-of-sample reference forecasts}{
 \code{ref.opts} specifies the 
   set-up of the climatological reference forecast for skill scores if no 
-  explicit reference forecast is provided. \code{ref.opts} can be either set 
-  to \code{NULL}, that is all available observations are used as equiprobable
-  members of a reference forecast, or a list with \code{n} elements 
-  containing the indices of the observations to be used to construct the 
-  reference forecast for forecast \code{n} can be provided. The indices 
-  provided have to be non-missing and in the range of \code{1} to \code{n} of
-  the verifying observations.
+  explicit reference forecast is provided. \code{ref.opts} by default is set 
+  to \code{'none'}, that is all available observations are used as equiprobable
+  members of a reference forecast. Alternatively, \code{ref.opts} can be set to 
+  \code{'crossval'} for leave-one-out crossvalidated reference forecasts, 
+  or \code{'forward'} for a forward protocol (see \code{\link{indRef}}).
   
-  In addition, the following standard approaches to generate out-of-sample 
-  reference forecasts are supported by keyword or shortlist. Leave-one-out 
-  reference forecasts can be produced by \code{ref.opts = "crossval"} or 
-  \code{ref.opts = list(crossval=TRUE, blocklength=1)}. 
-  Leave-moving-blocks-out forecasts can be produced by setting \code{ref.opts
-  = list(crossval=TRUE, blocklength=n)}, where \code{n} is the number of 
-  observations around the forecast that are not used in the reference 
-  forecast.
-  
-  Correspondingly, reference forecasts that are only based on past (future) 
-  observations can be produced using \code{ref.opts = "forward"} or 
-  \code{ref.opts = list(forward=TRUE)}. For the \code{forward} method, the 
-  first half of the reference forecasts only uses future information, i.e. 
-  observations \code{2:n} for forecast \code{1}, \code{3:n} for \code{2} and 
-  so forth. The second half of the reference forecasts use only past 
-  observations, i.e. observations \code{1:(n-1)} for forecast \code{n}, 
-  \code{1:(n-2)} for \code{n-1}, etc.
-  
-  In combination with the above, a subset of the observations can be 
-  specified for use as reference forecasts by providing the explicit indices 
-  of the observations to be used via \code{ref.opts = list(..., 
-  indices=1:k)}. In combination with the \code{forward} method, all
-  observations in \code{ref.opts$indices} will be used to construct the
-  reference forecast for forecasts not included in \code{ref.opts$indices}.
-  In combination with the \code{crossval} method with \code{blocklength > 1},
-  observations are used for the reference forecasts that are included in
-  \code{ref.opts$indices}, but not in the block around the forecast index,
-  where this block is defined on all indices and not on the indices supplied
-  by \code{ref.opts$indices}.
+  Alternatively, a list with named parameters corresponding to the input
+  arguments of \code{\link{indRef}} can be supplied for more fine-grained
+  control over standard cases. Finally, also a list with observation indices
+  to be used for each forecast can be supplied (see \code{\link{generateRef}}).
 }
 
 \section{Parallel processing}{

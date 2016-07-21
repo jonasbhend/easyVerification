@@ -40,8 +40,9 @@
 #' @param maxncpus upper bound for self-selected number of CPUs
 #' @param ncpus number of CPUs used in parallel computation, self-selected 
 #'   number of CPUs is used when \code{is.null(ncpus)} (the default).
-#' @param ref.opts string or list with specifications for the reference forecast
-#'   (see below and \code{\link{veriUnwrap}})
+#' @param ref.opts type of out-of-sample reference forecasts or  namelist with 
+#'   arguments as in \code{\link{indRef}} or list of indices for each 
+#'   forecast instance
 #' @param ... additional arguments passed to \code{verifun}
 #'   
 #' @section List of functions to be called: The selection of verification 
@@ -86,43 +87,16 @@
 #'   
 #' @section Out-of-sample reference forecasts:\code{ref.opts} specifies the 
 #'   set-up of the climatological reference forecast for skill scores if no 
-#'   explicit reference forecast is provided. \code{ref.opts} can be either set 
-#'   to \code{NULL}, that is all available observations are used as equiprobable
-#'   members of a reference forecast, or a list with \code{n} elements 
-#'   containing the indices of the observations to be used to construct the 
-#'   reference forecast for forecast \code{n} can be provided. The indices 
-#'   provided have to be non-missing and in the range of \code{1} to \code{n} of
-#'   the verifying observations.
+#'   explicit reference forecast is provided. \code{ref.opts} by default is set 
+#'   to \code{'none'}, that is all available observations are used as equiprobable
+#'   members of a reference forecast. Alternatively, \code{ref.opts} can be set to 
+#'   \code{'crossval'} for leave-one-out crossvalidated reference forecasts, 
+#'   or \code{'forward'} for a forward protocol (see \code{\link{indRef}}).
 #'   
-#'   In addition, the following standard approaches to generate out-of-sample 
-#'   reference forecasts are supported by keyword or shortlist. Leave-one-out 
-#'   reference forecasts can be produced by \code{ref.opts = "crossval"} or 
-#'   \code{ref.opts = list(crossval=TRUE, blocklength=1)}. 
-#'   Leave-moving-blocks-out forecasts can be produced by setting \code{ref.opts
-#'   = list(crossval=TRUE, blocklength=n)}, where \code{n} is the number of 
-#'   observations around the forecast that are not used in the reference 
-#'   forecast.
-#'   
-#'   Correspondingly, reference forecasts that are only based on past (future) 
-#'   observations can be produced using \code{ref.opts = "forward"} or 
-#'   \code{ref.opts = list(forward=TRUE)}. For the \code{forward} method, the 
-#'   first half of the reference forecasts only uses future information, i.e. 
-#'   observations \code{2:n} for forecast \code{1}, \code{3:n} for \code{2} and 
-#'   so forth. The second half of the reference forecasts use only past 
-#'   observations, i.e. observations \code{1:(n-1)} for forecast \code{n}, 
-#'   \code{1:(n-2)} for \code{n-1}, etc.
-#'   
-#'   In combination with the above, a subset of the observations can be 
-#'   specified for use as reference forecasts by providing the explicit indices 
-#'   of the observations to be used via \code{ref.opts = list(..., 
-#'   indices=1:k)}. In combination with the \code{forward} method, all
-#'   observations in \code{ref.opts$indices} will be used to construct the
-#'   reference forecast for forecasts not included in \code{ref.opts$indices}.
-#'   In combination with the \code{crossval} method with \code{blocklength > 1},
-#'   observations are used for the reference forecasts that are included in
-#'   \code{ref.opts$indices}, but not in the block around the forecast index,
-#'   where this block is defined on all indices and not on the indices supplied
-#'   by \code{ref.opts$indices}.
+#'   Alternatively, a list with named parameters corresponding to the input
+#'   arguments of \code{\link{indRef}} can be supplied for more fine-grained
+#'   control over standard cases. Finally, also a list with observation indices
+#'   to be used for each forecast can be supplied (see \code{\link{generateRef}}).
 #'   
 #' @section Parallel processing: Parallel processing is enabled using the 
 #'   \code{\link[parallel]{parallel}} package. Prallel verification is using 
@@ -170,7 +144,7 @@
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
                       ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, maxncpus=16, ncpus = NULL, ref.opts=NULL, ...){
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, ref.opts = 'none', ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -207,39 +181,19 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   nrest <- length(obs)/ntim
   
   ## deparse ref.opts
-  if (is.null(fcst.ref) & !is.null(ref.opts)){
-    if (is.null(prob) & is.null(threshold)) {
-      if (is.list(ref.opts)){
-        achoice <- c("crossval", "forward", "blocklength", "indices")
-        rargs <- sapply(names(ref.opts), match.arg, achoice)
-        if (any(rargs %in% achoice)){
-          names(ref.opts) <- rargs
-          if (is.null(ref.opts$crossval)) ref.opts$crossval <- FALSE
-          if (is.null(ref.opts$forward)) ref.opts$forward <- FALSE
-          ind <- if (!is.null(ref.opts$indices)) ref.opts$indices else 1:ntim
-          block <- if (is.null(ref.opts$blocklength)) 1 else ref.opts$blocklength
-          if (ref.opts$crossval & !ref.opts$forward) {
-            ref.opts <- lapply(1:ntim, function(x) setdiff(ind, x + seq(-((block - 1) %/% 2), block %/% 2)))
-          }  else if (ref.opts$forward & !ref.opts$crossval) {
-            ref.opts <- lapply(1:ntim, function(x) ind)
-            ref.opts[ind] <- lapply(seq(along=ind), function(x) ind[seq(if (x > length(ind) %/% 2) 1 else x + 1, if (x > length(ind) %/% 2) x - 1 else length(ind))])
-          } else {
-            ref.opts <- lapply(1:ntim, function(x) ind)
-          }        
-        }
-      } else if (is.character(ref.opts)){
-        if (ref.opts == 'crossval') {
-          ref.opts <- lapply(1:ntim, function(x) setdiff(1:ntim, x))
-        } else if (ref.opts == 'forward') {
-          ref.opts <- lapply(1:ntim, function(x) seq(if (x > ntim %/% 2) 1 else x + 1, if (x > ntim %/% 2) x - 1 else ntim))
-        }
-      }
-    } else {
-      warning("Out-of-sample climatological reference forecasts are not yet supported for categorical forecasts") 
-    }
-  } 
-  
-  
+  if (length(ref.opts) == 1 & is.character(ref.opts)){
+    ref.ind <- indRef(nfcst=ntim, type=ref.opts)  
+  } else if (is.list(ref.opts)) {
+    if (all(sapply(ref.opts, is.numeric)) & is.null(names(ref.opts))){
+      ref.ind <- ref.opts
+    }  else {
+      if (is.null(ref.opts[['nfcst']])) ref.opts[['nfcst']] <- ntim
+      ref.ind <- do.call(indRef, ref.opts)
+    }   
+  } else {
+    stop('Format of ref.opts is not compatible')
+  }
+
   ## dimensions of prob or threshold
   if (is.null(prob)){
     nprob <- 0
@@ -310,9 +264,12 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   
   ## fix for FairRpss against climatological reference forecast with category
   ## boundaries defined on distribution of verifying observations
-  if (verifun == 'FairRpss' & !is.null(prob) & is.null(ref.opts)){
-    verifun <- 'climFairRpss'
-    message("Please note that FairRpss is computed without ensemble-size correction for the climatological reference forecast, as categories are based on quantiles of the observations and forecast probabilities are therefore known.")
+  if (verifun == 'FairRpss' & !is.null(prob)){
+    ref.ind2 <- indRef(ntim)
+    if (identical(ref.ind, ref.ind2)){
+      verifun <- 'climFairRpss'
+      message("Please note that FairRpss is computed without ensemble-size correction for the climatological reference forecast, as categories are based on quantiles of the observations and forecast probabilities are therefore known.")
+    }
   }
 
   nind <- c(nens, nref, 1, nprob, nthresh)
@@ -325,7 +282,7 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
                             FUN=veriUnwrap, 
                             verifun=verifun, 
                             nind=nind,
-                            ref.opts=ref.opts,
+                            ref.ind=ref.ind,
                             ...))    
         
   } else {
@@ -334,7 +291,7 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
                          FUN=veriUnwrap, 
                          verifun=verifun, 
                          nind=nind,
-                         ref.opts=ref.opts,
+                         ref.ind=ref.ind,
                          ...))    
   }
   

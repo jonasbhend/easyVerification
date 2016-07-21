@@ -5,7 +5,7 @@
 \title{Unwrap Arguments and Hand Over to Verification Function}
 \usage{
 veriUnwrap(x, verifun, nind = c(nens = ncol(x) - 1, nref = 0, nobs = 1, nprob
-  = 0, nthresh = 0), ref.opts = NULL, ...)
+  = 0, nthresh = 0), ref.ind = NULL, ...)
 }
 \arguments{
 \item{x}{n x k + 1 matrix with n forecasts of k ensemble members plus the 
@@ -17,7 +17,7 @@ verifying observations}
 reference forecasts, observations (defaults to 1), probability or absolute 
 thresholds (see details)}
 
-\item{ref.opts}{string or list with specifications for the reference forecast
+\item{ref.ind}{list with specifications for the reference forecast
 (see details)}
 
 \item{...}{additional arguments passed on to \code{verifun}}
@@ -47,22 +47,17 @@ Forecast verification metrics are only computed for forecasts with
   probability thresholds, and \code{nthresh} the number of absolute threshold
   for conversion of continuous forecasts to category forecasts.
   
-  \code{ref.opts} specifies the set-up of the climatological reference 
-  forecast for skill scores if no explicit reference forecast is provided. 
-  This can be either \code{NULL}, all available observations are used as 
-  equiprobable members of a reference forecast, or a list with \code{n} 
-  elements containing the indices of the observations to be used to construct
-  the reference forecast for forecast \code{n}. The indices provided have to 
-  be non-missing and in the range of \code{1} to \code{n} of the verifying 
-  observations.
+  \code{ref.ind} specifies the set-up of the climatological reference 
+  forecast for skill scores if no explicit reference forecast is provided
+  (see \code{\link{indRef}}).
 }
 \note{
 Out-of-sample reference forecasts are not fully supported for 
   categorical forecasts defined on the distribution of forecast values (e.g. 
   using the argument \code{prob}). Whereas only the years specified in 
-  \code{ref.opts} are used for the reference forecasts, the probability 
+  \code{ref.ind} are used for the reference forecasts, the probability 
   thresholds for the reference forecasts are defined on the collection of
-  years specified in \code{ref.opts}.
+  years specified in \code{ref.ind}.
 }
 \seealso{
 \code{\link{veriApply}}

@@ -27,7 +27,7 @@
 #' @param nind named vector with number of ensemble members, ensemble members of
 #'   reference forecasts, observations (defaults to 1), probability or absolute 
 #'   thresholds (see details)
-#' @param ref.opts string or list with specifications for the reference forecast
+#' @param ref.ind list with specifications for the reference forecast
 #'   (see details)
 #' @param ... additional arguments passed on to \code{verifun}
 #'   
@@ -51,25 +51,21 @@
 #'   probability thresholds, and \code{nthresh} the number of absolute threshold
 #'   for conversion of continuous forecasts to category forecasts.
 #'   
-#'   \code{ref.opts} specifies the set-up of the climatological reference 
-#'   forecast for skill scores if no explicit reference forecast is provided. 
-#'   This can be either \code{NULL}, all available observations are used as 
-#'   equiprobable members of a reference forecast, or a list with \code{n} 
-#'   elements containing the indices of the observations to be used to construct
-#'   the reference forecast for forecast \code{n}. The indices provided have to 
-#'   be non-missing and in the range of \code{1} to \code{n} of the verifying 
-#'   observations.
+#'   \code{ref.ind} specifies the set-up of the climatological reference 
+#'   forecast for skill scores if no explicit reference forecast is provided
+#'   (see \code{\link{indRef}}).
+#'      
 #'   
 #' @note Out-of-sample reference forecasts are not fully supported for 
 #'   categorical forecasts defined on the distribution of forecast values (e.g. 
 #'   using the argument \code{prob}). Whereas only the years specified in 
-#'   \code{ref.opts} are used for the reference forecasts, the probability 
+#'   \code{ref.ind} are used for the reference forecasts, the probability 
 #'   thresholds for the reference forecasts are defined on the collection of
-#'   years specified in \code{ref.opts}.
+#'   years specified in \code{ref.ind}.
 #'   
 #' @seealso \code{\link{veriApply}}
 #'   
-veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, nprob=0, nthresh=0), ref.opts=NULL, ...){
+veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, nprob=0, nthresh=0), ref.ind=NULL, ...){
   nens <- nind['nens']
   nref <- nind['nref']
   nobs <- nind['nobs']
@@ -101,14 +97,11 @@ veriUnwrap <- function(x, verifun, nind=c(nens=ncol(x) - 1, nref=0, nobs=1, npro
     if (nn > nens + 1){
       xref <- x[,-c(1:nens, nn), drop=F]
     } else {
-      ## build reference forecast according to specifications in ref.opts
-      if (is.null(ref.opts)){
+      ## build reference forecast according to specifications in ref.ind
+      if (is.null(ref.ind)){
         xref <- t(array(x[,nn], c(nrow(x), nrow(x))))              
-      } else if (is.list(ref.opts) & length(ref.opts) == nrow(x) & 
-                   range(ref.opts)[1] >= 1 & range(ref.opts)[2] <= nrow(x)){
-        xobs <- x[,nn]
-        maxn <- max(sapply(ref.opts, length))
-        xref <- t(sapply(ref.opts, function(x) xobs[c(x, rep(NA, maxn - length(x)))]))
+      } else {
+        xref <- generateRef(x[,nn], ref.ind)
       }
     }
     if (is.dress){
