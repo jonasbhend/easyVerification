@@ -42,5 +42,5 @@ License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
 URL: http://www.meteoswiss.ch
-VignetteBuilder: knitr, R.rsp
+VignetteBuilder: rmarkdown, R.rsp
 RoxygenNote: 5.0.1
