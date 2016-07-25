@@ -97,8 +97,9 @@ indRef <- function(nfcst, type=c('none', 'forward', 'crossval', 'block'),
     ind <- lapply(1:nfcst, function(x) indices)
   } else if (type == 'forward') {
     stopifnot(length(indices) > 1)
-    ind <- lapply(1:nfcst, function(x) indices)
-    ind[indices] <- lapply(seq(along=indices), function(x) {
+    ind <- lapply(1:nfcst, function(x) indices) 
+    iinds <- indices[indices %in% 1:nfcst]
+    ind[iinds] <- lapply(seq(along=iinds), function(x) {
       indices[seq(ifelse(x > (length(indices) %/% 2), 1, x+1), 
                   ifelse( x > (length(indices) %/% 2), x-1, length(indices)))]
     })

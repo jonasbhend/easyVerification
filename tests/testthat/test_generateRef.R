@@ -11,6 +11,18 @@ test_that("Error handling", {
   expect_error(generateRef(rnorm(3), indRef(10, indices=3:5)))
 })
 
+test_that("Number of forecasts in reference indices", {
+  expect_equal(length(indRef(5)), 5)
+  expect_equal(length(indRef(5, indices=1:4)), 5)
+  expect_equal(length(indRef(5, indices=1:10)), 5)
+  expect_equal(length(indRef(5, type='forward', indices=1:4)), 5)
+  expect_equal(length(indRef(5, type='forward', indices=1:10)), 5)
+  expect_equal(length(indRef(5, type='crossval', indices=1:4)), 5)
+  expect_equal(length(indRef(5, type='crossval', indices=1:10)), 5)
+  expect_equal(length(indRef(5, type='block', indices=1:4)), 5)
+  expect_equal(length(indRef(5, type='block', indices=1:10)), 5)
+})
+
 test_that("Reference indices", {
   expect_equal(indRef(5, indices=2:4), lapply(1:5, function(x) 2:4))
   expect_equal(indRef(3, type='forward'), list(2:3, 1, 1:2))
