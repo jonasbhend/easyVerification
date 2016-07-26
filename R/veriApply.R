@@ -40,7 +40,7 @@
 #' @param maxncpus upper bound for self-selected number of CPUs
 #' @param ncpus number of CPUs used in parallel computation, self-selected 
 #'   number of CPUs is used when \code{is.null(ncpus)} (the default).
-#' @param ref.opts type of out-of-sample reference forecasts or  namelist with 
+#' @param strategy type of out-of-sample reference forecasts or  namelist with 
 #'   arguments as in \code{\link{indRef}} or list of indices for each 
 #'   forecast instance
 #' @param ... additional arguments passed to \code{verifun}
@@ -85,11 +85,11 @@
 #'   dimension in \code{obs} contains the category boundaries (absolute or 
 #'   relative) and thus may differ in length.
 #'   
-#' @section Out-of-sample reference forecasts:\code{ref.opts} specifies the 
+#' @section Out-of-sample reference forecasts:\code{strategy} specifies the 
 #'   set-up of the climatological reference forecast for skill scores if no 
-#'   explicit reference forecast is provided. \code{ref.opts} by default is set 
+#'   explicit reference forecast is provided. \code{strategy} by default is set 
 #'   to \code{'none'}, that is all available observations are used as equiprobable
-#'   members of a reference forecast. Alternatively, \code{ref.opts} can be set to 
+#'   members of a reference forecast. Alternatively, \code{strategy} can be set to 
 #'   \code{'crossval'} for leave-one-out crossvalidated reference forecasts, 
 #'   or \code{'forward'} for a forward protocol (see \code{\link{indRef}}).
 #'   
@@ -120,9 +120,9 @@
 #'   Out-of-sample reference forecasts are not fully supported for 
 #'   categorical forecasts defined on the distribution of forecast values (e.g. 
 #'   using the argument \code{prob}). Whereas only the years specified in 
-#'   \code{ref.opts} are used for the reference forecasts, the probability 
+#'   \code{strategy} are used for the reference forecasts, the probability 
 #'   thresholds for the reference forecasts are defined on the collection of
-#'   years specified in \code{ref.opts}.
+#'   years specified in \code{strategy}.
 #'   
 #' @seealso \code{\link{convert2prob}} for conversion of continuous into 
 #'   category forecasts (and observations)
@@ -144,7 +144,7 @@
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
                       ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, maxncpus=16, ncpus = NULL, ref.opts = 'none', ...){
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, strategy = 'none', ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -180,18 +180,18 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   ntim <- head(tail(dim(fcst), 2), 1)
   nrest <- length(obs)/ntim
   
-  ## deparse ref.opts
-  if (length(ref.opts) == 1 & is.character(ref.opts)){
-    ref.ind <- indRef(nfcst=ntim, type=ref.opts)  
-  } else if (is.list(ref.opts)) {
-    if (all(sapply(ref.opts, is.numeric)) & is.null(names(ref.opts))){
-      ref.ind <- ref.opts
+  ## deparse strategy
+  if (length(strategy) == 1 & is.character(strategy)){
+    ref.ind <- indRef(nfcst=ntim, type=strategy)  
+  } else if (is.list(strategy)) {
+    if (all(sapply(strategy, is.numeric)) & is.null(names(strategy))){
+      ref.ind <- strategy
     }  else {
-      if (is.null(ref.opts[['nfcst']])) ref.opts[['nfcst']] <- ntim
-      ref.ind <- do.call(indRef, ref.opts)
+      if (is.null(strategy[['nfcst']])) strategy[['nfcst']] <- ntim
+      ref.ind <- do.call(indRef, strategy)
     }   
   } else {
-    stop('Format of ref.opts is not compatible')
+    stop('Format of strategy is not compatible')
   }
 
   ## dimensions of prob or threshold
