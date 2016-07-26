@@ -7,7 +7,7 @@
 veriApply(verifun, fcst, obs, fcst.ref = NULL, tdim = length(dim(fcst)) - 1,
   ensdim = length(dim(fcst)), prob = NULL, threshold = NULL,
   na.rm = FALSE, parallel = FALSE, maxncpus = 16, ncpus = NULL,
-  ref.opts = "none", ...)
+  strategy = "none", ...)
 }
 \arguments{
 \item{verifun}{Name of function to compute verification metric (score, skill 
@@ -38,7 +38,7 @@ scores only)}
 \item{ncpus}{number of CPUs used in parallel computation, self-selected 
 number of CPUs is used when \code{is.null(ncpus)} (the default).}
 
-\item{ref.opts}{type of out-of-sample reference forecasts or  namelist with 
+\item{strategy}{type of out-of-sample reference forecasts or  namelist with 
 arguments as in \code{\link{indRef}} or list of indices for each 
 forecast instance}
 
@@ -61,9 +61,9 @@ If the forecasts and observations are only available as category
   Out-of-sample reference forecasts are not fully supported for 
   categorical forecasts defined on the distribution of forecast values (e.g. 
   using the argument \code{prob}). Whereas only the years specified in 
-  \code{ref.opts} are used for the reference forecasts, the probability 
+  \code{strategy} are used for the reference forecasts, the probability 
   thresholds for the reference forecasts are defined on the collection of
-  years specified in \code{ref.opts}.
+  years specified in \code{strategy}.
 }
 \section{List of functions to be called}{
  The selection of verification 
@@ -110,11 +110,11 @@ If the forecasts and observations are only available as category
 }
 
 \section{Out-of-sample reference forecasts}{
-\code{ref.opts} specifies the 
+\code{strategy} specifies the 
   set-up of the climatological reference forecast for skill scores if no 
-  explicit reference forecast is provided. \code{ref.opts} by default is set 
+  explicit reference forecast is provided. \code{strategy} by default is set 
   to \code{'none'}, that is all available observations are used as equiprobable
-  members of a reference forecast. Alternatively, \code{ref.opts} can be set to 
+  members of a reference forecast. Alternatively, \code{strategy} can be set to 
   \code{'crossval'} for leave-one-out crossvalidated reference forecasts, 
   or \code{'forward'} for a forward protocol (see \code{\link{indRef}}).
   
