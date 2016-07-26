@@ -1,3 +1,12 @@
+## easyVerification 0.2.0.9005
+
+* Bug fix in `indRef`
+
+## easyVerification 0.2.0.9004
+
+* Re-factored out-of-sample Verification
+* Added reliability categorization following Weisheimer et al. (2014)
+
 ## easyVerification 0.2.0.9003
 
 * fix for FairRpss against climatological reference forecast with category boundaries defined on distribution of verifying observations
