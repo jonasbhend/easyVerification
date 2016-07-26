@@ -18,71 +18,50 @@
 
 #' @name generateRef
 #' @aliases indRef
-#' 
-#' @title 
-#' Generate Probabilistic Climatological Ensemble Forecast from Observations
-#' 
-#' @description
-#' To generate reference ensemble forecasts for forecast evaluation based on
-#' the available observations, \code{indRef} implements the out-of-sample or
-#' in-sample protocol to be used and \code{generateRef} produces the corresponding
-#' ensemble forecast given the actual observations.
-#' 
+#'   
+#' @title Generate Probabilistic Climatological Ensemble Forecast from 
+#'   Observations
+#'   
+#' @description To generate reference ensemble forecasts for forecast evaluation
+#'   based on the available observations, \code{indRef} implements the 
+#'   out-of-sample or in-sample protocol to be used and \code{generateRef} 
+#'   produces the corresponding ensemble forecast given the actual observations.
+#'   
 #' @param nfcst number of forecast instances to be produce
 #' @param type type of out-of-sample protocol to be applied (see below)
-#' @param indices Subset of the observations / forecast times to be used for
+#' @param indices Subset of the observations / forecast times to be used for 
 #'   reference forecasts
-#' @param blocklength for cross-validation
-#' 
-#' @return 
-#'   \item{ind}{A list of indices to be used for each forecast from \code{1} to \code{nfcst}}
-#'  
-#' @section Cross-validation: Leave-one-out and leave-n-out cross-validation
-#'   reference forecasts can be produced by setting \code{type = "crossval"}.
-#'   By default, the blocklength is set to \code{1}, but moving blocks of
-#'   length \code{n} can be specified by setting \code{blocklength = n}. 
+#' @param blocklength for cross-validation and split-sample
 #'   
-#' @section Forward: Correspondingly, reference forecasts that are only based on past (future) 
-#'   observations can be produced using \code{type = "forward"}. For this, the 
-#'   first half of the reference forecasts only uses future information, i.e. 
-#'   observations \code{2:n} for forecast \code{1}, \code{3:n} for \code{2} and 
-#'   so forth. The second half of the reference forecasts use only past 
-#'   observations, i.e. observations \code{1:(n-1)} for forecast \code{n}, 
-#'   \code{1:(n-2)} for \code{n-1}, etc.
+#' @return \item{ind}{A list of indices to be used for each forecast from 
+#'   \code{1} to \code{nfcst}}
 #'   
+#' @section Cross-validation: Leave-one-out and leave-n-out cross-validation 
+#'   reference forecasts can be produced by setting \code{type = "crossval"}. By
+#'   default, the blocklength is set to \code{1}, but moving blocks of length 
+#'   \code{n} can be specified by setting \code{blocklength = n}.
 #'   
+#' @section Split sample: In contrast to \code{type="crossval"}, 
+#'   \code{type="block"} is used for split-sample validation with 
+#'   non-overlapping blocks of length \code{blocklength} retained for 
+#'   validation.
 #'   
-#'   \code{ref.opts} specifies the 
-#'   set-up of the climatological reference forecast for skill scores if no 
-#'   explicit reference forecast is provided. \code{ref.opts} can be either set 
-#'   to \code{NULL}, that is all available observations are used as equiprobable
-#'   members of a reference forecast, or a list with \code{n} elements 
-#'   containing the indices of the observations to be used to construct the 
-#'   reference forecast for forecast \code{n} can be provided. The indices 
-#'   provided have to be non-missing and in the range of \code{1} to \code{n} of
-#'   the verifying observations.
+#' @section Forward: Correspondingly, reference forecasts that are only based on
+#'   past (future) observations can be produced using \code{type = "forward"}. 
+#'   For this, the first half of the reference forecasts only uses future 
+#'   information, i.e. observations \code{2:n} for forecast \code{1}, \code{3:n}
+#'   for \code{2} and so forth. The second half of the reference forecasts use 
+#'   only past observations, i.e. observations \code{1:(n-1)} for forecast 
+#'   \code{n}, \code{1:(n-2)} for \code{n-1}, etc.
 #'   
-#'   Correspondingly, reference forecasts that are only based on past (future) 
-#'   observations can be produced using \code{ref.opts="forward"} or 
-#'   \code{ref.opts = list(forward=TRUE)}. For the \code{forward} method, the 
-#'   first half of the reference forecasts only uses future information, i.e. 
-#'   observations \code{2:n} for forecast \code{1}, \code{3:n} for \code{2} and 
-#'   so forth. The second half of the reference forecasts use only past 
-#'   observations, i.e. observations \code{1:(n-1)} for forecast \code{n}, 
-#'   \code{1:(n-2)} for \code{n-1}, etc.
+#' @section Subsetting: In combination with the above, a subset of the 
+#'   observations can be specified for use as reference forecasts by providing
+#'   the explicit indices of the observations to be used via \code{indices=1:k}.
+#'   In combination with the \code{forward} method, all observations in 
+#'   \code{indices} will be used to construct the reference forecast for
+#'   forecasts not included in \code{indices} (i.e. if \code{nfcst >
+#'   max(indices)}).
 #'   
-#'   In combination with the above, a subset of the observations can be 
-#'   specified for use as reference forecasts by providing the explicit indices 
-#'   of the observations to be used via \code{ref.opts = list(..., 
-#'   indices=1:k)}. In combination with the \code{forward} method, all
-#'   observations in \code{ref.opts$indices} will be used to construct the
-#'   reference forecast for forecasts not included in \code{ref.opts$indices}.
-#'   In combination with the \code{crossval} method with \code{blocklength > 1},
-#'   observations are used for the reference forecasts that are included in
-#'   \code{ref.opts$indices}, but not in the block around the forecast index,
-#'   where this block is defined on all indices and not on the indices supplied
-#'   by \code{ref.opts$indices}.
-#' 
 #' @keywords utilities
 #' @export
 #' 
@@ -106,11 +85,10 @@ indRef <- function(nfcst, type=c('none', 'forward', 'crossval', 'block'),
   } else {
     stopifnot(blocklength < length(indices))
     if (type == 'crossval') {
-      ind <- lapply(1:nfcst, function(x) {
-        mini <- min(nfcst - blocklength + 1, max(1, x - blocklength %/% 2))
-        maxi <- max(blocklength, min(nfcst, x + (blocklength - 1) %/% 2))
-        return(setdiff(indices, mini:maxi))
-        })
+      ind <- lapply(1:nfcst, function(x) setdiff(indices, 
+                                                 seq(x - blocklength %/% 2,
+                                                     x + (blocklength - 1) %/% 2))
+      )
     } else if (type == 'block'){
       ind <- lapply(1:nfcst, function(x) indices)
       ## figure out number of blocks
