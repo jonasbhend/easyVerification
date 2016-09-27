@@ -1,30 +1,13 @@
-## easyVerification 0.2.0.9006
+## easyVerification 0.3.0
 
-* Cleaning up and fixing for unit tests
-
-## easyVerification 0.2.0.9005
-
-* Bug fix in `indRef`
-
-## easyVerification 0.2.0.9004
-
-* Re-factored out-of-sample Verification
-* Added reliability categorization following Weisheimer et al. (2014)
-
-## easyVerification 0.2.0.9003
-
-* fix for FairRpss against climatological reference forecast with category boundaries defined on distribution of verifying observations
-* added support for difference in scores functions (related to skill scores)
-
-## easyVerification 0.2.0.9002
-
-* removed onload function to check package version. Updating is now dealt with by update.packages as for other CRAN packages.
 * added support for out-of-sample reference forecasts (user-defined or by keyword for a few standard approaches, issues #1 and #2)
-* removed non-sensical mean error skill score `EnsMess`
-
-## easyVerification 0.2.0.9001
-
-* fixed bug in `convert2prob` for climatological forecasts (reduced set of values to compute percentile boundaries for consistency)
+* added support for difference in scores functions (related to skill scores)
+* removed onload function to check package version. Updating is now dealt with by update.packages as for other CRAN packages.
+* removed non-sensical mean error skill score `EnsMess`.
+* deprecated ill-defined ROC area skill score. In future versions, only the ROC area score will be implemented `EnsRoca`.
+* Added reliability categorization following Weisheimer et al. (2014).
+* fixed bug in `convert2prob` for climatological forecasts (reduced set of values to compute percentile boundaries for consistency).
+* fix for `FairRpss` against climatological reference forecast with category boundaries defined on distribution of verifying observations.
 
 ## easyVerification 0.2.0
 

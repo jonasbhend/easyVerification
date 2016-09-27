@@ -42,9 +42,9 @@ For the traditional ROC area skill score where the reference
 \examples{
 tm <- toymodel()
 
-## compute ROC skill score for forecasts of x <= 0, 0 <= x < 1, and x > 1
-## skill score is computed using climatological forecast as reference
-veriApply("EnsRocss", tm$fcst, tm$obs, threshold=c(0,1))
+## compute ROC area score for forecasts with categories x <= 0, 
+## 0 <= x < 1, and x > 1
+veriApply("EnsRoca", tm$fcst, tm$obs, threshold=c(0,1))
   
 }
 \references{

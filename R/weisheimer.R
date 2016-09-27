@@ -47,7 +47,7 @@ weisheimer <- function(ens, obs, pthresh=2/3, nboot=100,
     
     bootfun <- function(ind=seq(along=ff)){
       ## compute brier score
-      bs <- as.data.frame(brier(oo[ind], ff[ind],
+      bs <- as.data.frame(verification::brier(oo[ind], ff[ind],
                                 thresholds=brier.thresholds)[c('y.i', 'obar.i', 'prob.y')])
       ## normalise to go through origin
       bs$obar.i <- bs$obar.i - pp
