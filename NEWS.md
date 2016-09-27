@@ -1,3 +1,7 @@
+## easyVerification 0.2.0.9006
+
+* Cleaning up and fixing for unit tests
+
 ## easyVerification 0.2.0.9005
 
 * Bug fix in `indRef`

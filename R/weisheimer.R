@@ -54,7 +54,7 @@ weisheimer <- function(ens, obs, pthresh=2/3, nboot=100,
       bs$y.i <- bs$y.i - pp
       
       ## compute weighted regression
-      coef(lm(obar.i ~ y.i - 1, bs, weights=prob.y))
+      coef(lm(obar.i ~ y.i - 1, bs, weights=bs$prob.y))
     }
     
     ## set up output

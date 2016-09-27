@@ -46,6 +46,6 @@ test_that("Reference forecasts", {
   expect_equal(generateRef(1:3, indRef(3, type='crossval')),
                matrix(c(2,3,1,3,1,2), 3, 2, byrow=TRUE))  
   expect_equal(generateRef(1:3, indRef(3, type='crossval', blocklength=2)),
-               matrix(c(3,3,1), 3, 1, byrow=TRUE))  
+               matrix(c(2,3,3,NA,1,NA), 3, 2, byrow=TRUE))  
 })
 
