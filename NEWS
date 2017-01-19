@@ -1,3 +1,7 @@
+Changes in version 0.3.0.9001
+
+  * out-of-sample computation of percentile thresholds
+
 Changes in version 0.3.0 (2016-09-28)
 
   * added support for out-of-sample reference forecasts (user-defined or by keyword for a few standard approaches, issues #1 and #2)
