@@ -51,14 +51,15 @@
 #' @export
 climFairRpss <- function (ens, ens.ref, obs, format=c("category", "member")) {
   if (packageVersion("SpecsVerification") >= 0.5){
-    out <- SkillScore(EnsRps(ens, obs, R.new=Inf, format=format),
-                      EnsRps(ens.ref, obs, R.new=NA, format=format),
-                      handle.na="use.pairwise.complete")    
+    skillfun <- 'SkillScore'
+    out <- get(skillfun)(changearg(EnsRps, format=format)(ens, obs, R.new=Inf),
+                         changearg(EnsRps, format=format)(ens.ref, obs, R.new=NA),
+                         handle.na="use.pairwise.complete")    
   } else {
     stopifnot(all(dim(ens) == dim(obs)))
     stopifnot(all(dim(ens.ref) == dim(obs)))
-    rps.ens <- changearg(FairRps, format='member')(ens, obs)
-    rps.ref <- changearg(EnsRps, format='member')(ens.ref, obs)
+    rps.ens <- FairRps(ens, obs)
+    rps.ref <- EnsRps(ens.ref, obs)
     i.nna <- which(!is.na(rps.ens + rps.ref))
     rps.ens <- rps.ens[i.nna]
     rps.ref <- rps.ref[i.nna]
