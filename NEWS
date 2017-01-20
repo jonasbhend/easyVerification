@@ -1,18 +1,8 @@
-Changes in version 0.3.0.9004
+Changes in version 0.4.0
 
-  * Changed to new implementation of AUC in 'SpecsVerification'
-  
-Changes in version 0.3.0.9003
-
-  * Fully implement out-of-sample percentile thresholds and test
-
-Changes in version 0.3.0.9002
-
-  * adopt to new version of SpecsVerification
-
-Changes in version 0.3.0.9001
-
-  * out-of-sample computation of percentile thresholds
+  * Adopted to new version of SpecsVerification (0.5.0)
+  * Fully implemented out-of-sample computation of percentile thresholds
+  * Changed to new implementation of AUC in 'SpecsVerification' with standard errors
 
 Changes in version 0.3.0 (2016-09-28)
 
