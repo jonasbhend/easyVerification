@@ -1,3 +1,7 @@
+Changes in version 0.3.0.9002
+
+  * adopt to new version of SpecsVerification
+
 Changes in version 0.3.0.9001
 
   * out-of-sample computation of percentile thresholds
