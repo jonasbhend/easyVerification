@@ -35,7 +35,7 @@
 #' @param threshold absolute thresholds for categorical forecasts (defaults to 
 #'   NULL)
 #' @param ref.ind list of forecast/obs instances to be used to estimate 
-#'   precentile thresholds
+#'   percentile thresholds
 #' @param multi.model logical, are we dealing with initial condition (the 
 #'   default) or multi-model ensembles (see details)?
 #'   
@@ -54,6 +54,10 @@
 #'   different ensemble members (if present). Thereby, time/forecast varying
 #'   thresholds can potentially be supplied (although I am not sure this is
 #'   useful or needed).
+#'   
+#'   If \code{ref.ind} is specified, only the specified indices of the input
+#'   variables are used to estimate the percentile thresholds (\code{prob}). If
+#'   used with \code{threshold}, or without anything, \code{ref.ind} has no effect. 
 #'   
 #'   If \code{multi.model = TRUE}, the relative thresholds supplied by
 #'   \code{prob} are ensemble member specific, i.e. are estimated for each
@@ -80,12 +84,12 @@
 #' @export
 convert2prob <- function(x, prob=NULL, threshold=NULL, ref.ind=NULL,
                          multi.model=FALSE){
-  ## do nothing if you do not need to do something, simple things first
-  if (is.null(prob) & is.null(threshold)) return(x)
-
   ## check if input arguments comply
   stopifnot(is.vector(x) | is.matrix(x))
   stopifnot(any(!is.na(x)))
+
+  ## do nothing if you do not need to do something, simple things first
+  if (is.null(prob) & is.null(threshold)) return(x)
   if (!is.null(prob) & !is.null(threshold)){
     stop('Both probability and absolute thresholds provided')
   } 
@@ -112,11 +116,21 @@ convert2prob <- function(x, prob=NULL, threshold=NULL, ref.ind=NULL,
 prob2thresh <- function(x, prob, ref.ind=NULL, multi.model=FALSE){
   
   ## reduce size of x if constructed from observations (i.e. all members the same)
-  ## to guarantee a consistent estimate of the 
+  ## to guarantee a consistent estimate of the quantiles
   xthresh <- x
   if (is.matrix(x)){
-    if(all(apply(x, 1, function(y) all(y == x[1,])))){
-      xthresh <- x[1,]
+    if (is.null(ref.ind)){
+      if(all(apply(x, 1, function(y) all(y == x[1,])))){
+        xthresh <- x[1,]
+      }
+    } else if (length(unique(c(x))) <= max(unlist(ref.ind))) {
+      ## generate indices of reference forecast to reverse
+      ## engineer original vector
+      iref <- generateRef(sort(unique(unlist(ref.ind))), ref.ind)
+      if (all(tapply(x, iref, function(y) all(y == y[1])))){
+        iind <- which(!duplicated(c(iref)))
+        xthresh <- x[iind][order(iref[iind])]
+      }
     }
   }
   

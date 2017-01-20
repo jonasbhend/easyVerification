@@ -22,7 +22,7 @@ expandthresh(threshold, x)
 NULL)}
 
 \item{ref.ind}{list of forecast/obs instances to be used to estimate 
-precentile thresholds}
+percentile thresholds}
 
 \item{multi.model}{logical, are we dealing with initial condition (the 
 default) or multi-model ensembles (see details)?}
@@ -56,6 +56,10 @@ In case both \code{prob} and \code{threshold} are set to
   different ensemble members (if present). Thereby, time/forecast varying
   thresholds can potentially be supplied (although I am not sure this is
   useful or needed).
+  
+  If \code{ref.ind} is specified, only the specified indices of the input
+  variables are used to estimate the percentile thresholds (\code{prob}). If
+  used with \code{threshold}, or without anything, \code{ref.ind} has no effect. 
   
   If \code{multi.model = TRUE}, the relative thresholds supplied by
   \code{prob} are ensemble member specific, i.e. are estimated for each
