@@ -65,8 +65,9 @@ EnsRoca <- function(ens, obs, use.easy=FALSE){
   stopifnot(is.matrix(ens), is.matrix(obs), length(obs) == length(ens))
   if (packageVersion("SpecsVerification") >= 0.5 & ! use.easy){
     ens.prob <- count2prob(ens, type=4)
+    aucfun <- get("Auc")
     roc.area <- lapply(1:ncol(ens.prob), function(i) {
-      auc <- try(Auc(ens.prob[,i], obs[,i]), silent=TRUE)
+      auc <- try(aucfun(ens.prob[,i], obs[,i]), silent=TRUE)
       if (class(auc) == 'try-error') auc <- as.list(as.numeric(rep(NA, 2)))
       return(auc)})
     roc.area <- as.list(unlist(roc.area, recursive=FALSE))
