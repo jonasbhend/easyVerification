@@ -1,4 +1,8 @@
-Changes in version 0.3.0.9002
+Changes in version 0.3.0.9004
+
+  * Changed to new implementation of AUC in 'SpecsVerification'
+  
+Changes in version 0.3.0.9003
 
   * Fully implement out-of-sample percentile thresholds and test
 
