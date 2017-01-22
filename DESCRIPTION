@@ -24,7 +24,7 @@ Description: Set of tools to simplify application of atomic forecast
     functionality of this package.
 Depends:
     R (>= 3.0),
-    SpecsVerification,
+    SpecsVerification (>= 0.4),
     stats,
     utils
 Imports:

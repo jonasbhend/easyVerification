@@ -1,3 +1,6 @@
+## Failed CRAN tests
+Addressed CRAN test results by specifying the version requirements for dependency SpecsVerification.
+
 ## Test environments
 * local Ubuntu 12.04.5, R 3.0.2
 * local Ubuntu 16.04.1, R 3.3.2
