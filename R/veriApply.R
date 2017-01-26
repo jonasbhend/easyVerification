@@ -43,8 +43,6 @@
 #' @param strategy type of out-of-sample reference forecasts or  namelist with 
 #'   arguments as in \code{\link{indRef}} or list of indices for each 
 #'   forecast instance
-#' @param ptype type of parallelization to be used (one of "orig", "parLapply", 
-#'   or "parLapplyLB")
 #' @param ... additional arguments passed to \code{verifun}
 #'   
 #' @section List of functions to be called: The selection of verification 
@@ -146,8 +144,7 @@
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
                       ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, maxncpus=16, ncpus = NULL, strategy = 'none', 
-                      ptype = 'orig', ...){
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, strategy = 'none', ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -279,25 +276,14 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   names(nind) <- c("nens", "nref", "nobs", "nprob", "nthresh")
   if (hasparallel){
     on.exit(parallel::stopCluster(.cl))
-    if (ptype == 'orig') {
-      out <- Tmatrix(parallel::parApply(cl=.cl, 
-                                        X=xall[xmask,,,drop=F], 
-                                        MARGIN=1, 
-                                        FUN=veriUnwrap, 
-                                        verifun=verifun, 
-                                        nind=nind,
-                                        ref.ind=ref.ind,
-                                        ...))    
-    } else {
-      pfun <- get(ptype)
-      out <- pfun(cl = .cl, 
-                  X = which(xmask), 
-                  fun = function(i) veriUnwrap(xall[i,,],
-                                               verifun=verifun,
-                                               nind=nind,
-                                               ref.ind=ref.ind,
-                                               ...))
-    }
+    out <- Tmatrix(parallel::parApply(cl=.cl, 
+                            X=xall[xmask,,,drop=F], 
+                            MARGIN=1, 
+                            FUN=veriUnwrap, 
+                            verifun=verifun, 
+                            nind=nind,
+                            ref.ind=ref.ind,
+                            ...))    
         
   } else {
     out <- Tmatrix(pbapply::pbapply(xall[xmask,,,drop=F], 
@@ -311,13 +297,9 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   
   ## reformat the output by converting to list
   if (is.list(out)){
-    if (is.list(out[[1]])){
-      lnames <- names(out[[1]])
-      olist <- list()
-      for (ln in lnames) olist[[ln]] <- sapply(out, function(x) x[[ln]])
-    } else {
-      olist <- list(t(sapply(out, function(x) x)))
-    }
+    lnames <- names(out[[1]])
+    olist <- list()
+    for (ln in lnames) olist[[ln]] <- sapply(out, function(x) x[[ln]])
   } else {
     olist <- list(out)
   }

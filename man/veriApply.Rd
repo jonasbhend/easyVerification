@@ -7,7 +7,7 @@
 veriApply(verifun, fcst, obs, fcst.ref = NULL, tdim = length(dim(fcst)) - 1,
   ensdim = length(dim(fcst)), prob = NULL, threshold = NULL,
   na.rm = FALSE, parallel = FALSE, maxncpus = 16, ncpus = NULL,
-  strategy = "none", ptype = "orig", ...)
+  strategy = "none", ...)
 }
 \arguments{
 \item{verifun}{Name of function to compute verification metric (score, skill 
@@ -41,9 +41,6 @@ number of CPUs is used when \code{is.null(ncpus)} (the default).}
 \item{strategy}{type of out-of-sample reference forecasts or  namelist with 
 arguments as in \code{\link{indRef}} or list of indices for each 
 forecast instance}
-
-\item{ptype}{type of parallelization to be used (one of "orig", "parLapply", 
-or "parLapplyLB")}
 
 \item{...}{additional arguments passed to \code{verifun}}
 }
