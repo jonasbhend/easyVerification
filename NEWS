@@ -1,4 +1,10 @@
+Changes in version 0.4.0.9001
+
+  * Improve performance of `convert2prob` with reduced baseline
+
 Changes in version 0.4.0.9000
+
+  * Added missing value support for `count2prob`
 
 Changes in version 0.4.0
 
