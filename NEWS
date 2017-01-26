@@ -1,4 +1,10 @@
+Changes in version 0.4.0.9001
+
+  * Added options for parallelization
+
 Changes in version 0.4.0.9000
+
+  * Fixed missing values in `count2prob`
 
 Changes in version 0.4.0
 
