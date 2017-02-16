@@ -1,3 +1,7 @@
+Changes in version 0.4.0.9002
+
+  * Improved error handling with missing values in forecast
+
 Changes in version 0.4.0.9001
 
   * Improve performance of `convert2prob` with reduced baseline
