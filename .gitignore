@@ -3,3 +3,6 @@
 .RData
 README.html
 .nfs*
+*.o
+*.so
+*.dll
