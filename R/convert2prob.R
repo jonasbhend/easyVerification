@@ -123,13 +123,18 @@ prob2thresh <- function(x, prob, ref.ind=NULL, multi.model=FALSE){
       if(all(apply(x, 1, function(y) all(y == x[1,])))){
         xthresh <- x[1,]
       }
-    } else if (length(unique(c(x))) <= max(unlist(ref.ind))) {
-      ## generate indices of reference forecast to reverse
-      ## engineer original vector
-      iref <- generateRef(sort(unique(unlist(ref.ind))), ref.ind)
-      if (all(tapply(x, iref, function(y) all(y == y[1])))){
-        iind <- which(!duplicated(c(iref)))
-        xthresh <- x[iind][order(iref[iind])]
+    } else {
+      maxind <- max(unlist(ref.ind))
+      if (length(unique(c(x))) <= maxind) {
+        ## generate indices of reference forecast to reverse
+        ## engineer original vector
+        iref <- generateRef(seq(1, maxind), ref.ind)
+        if (all(dim(iref) == dim(x))){
+          if (all(tapply(x, iref, function(y) all(y == y[1])))){
+            iind <- which(!duplicated(c(iref)))
+            xthresh <- x[iind][order(iref[iind])]
+          }
+        }
       }
     }
   }
