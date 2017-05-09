@@ -1,0 +1,12 @@
+---
+stages:
+  - deploy
+
+deploy_mchran:
+  stage: deploy
+  script:
+    - /usr/local/bin/r_package_deploy
+  only:
+    - /^v[0-9].+$/
+  tags:
+    - mchran
