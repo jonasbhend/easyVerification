@@ -96,6 +96,7 @@ convert2prob <- function(x, prob=NULL, threshold=NULL, ref.ind=NULL,
   
   if (!is.null(prob)){
     ## convert probability to absolute threshold
+    stopifnot(unlist(ref.ind) %in% 1:nrow(as.matrix(x)))
     threshold <- prob2thresh(x=x, prob=prob, ref.ind=ref.ind, multi.model=multi.model)
   } else {
     ## blow up  threshold to size of nclass x size(x)
