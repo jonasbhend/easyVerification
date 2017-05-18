@@ -5,4 +5,5 @@
 ^NEWS\.md$
 cran-comments.md$
 ^revdep$
-.gitlab*
+\.gitlab-ci\.yml
+\.nfs*

@@ -1,6 +1,5 @@
 ## CRAN NOTEs and ERRORs
-* Addressed CRAN NOTEs by registering native routines
-* Fixed episodic test errors
+* There are no CRAN NOTEs and ERRORs.
 
 ## Test environments
 * local Ubuntu 12.04.5, R 3.0.2

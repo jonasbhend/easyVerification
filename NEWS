@@ -1,9 +1,6 @@
-Changes in version 0.4.1.9001
+Changes in version 0.4.2
 
   * Fixed bug with missing values and na.rm=T in translating to categorical forecasts in `convert2prob`
-
-Changes in version 0.4.1.9000
-
   * Fixed issue with limited amount of unique values in `convert2prob`
 
 Changes in version 0.4.1
