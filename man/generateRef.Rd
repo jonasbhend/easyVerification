@@ -23,6 +23,9 @@ reference forecasts}
 \item{blocklength}{for cross-validation and split-sample}
 
 \item{obs}{vector of observations}
+
+\item{ind}{list or matrix of dimension (\code{n x nref}) of indices 
+of the observations to be used for each forecast instance}
 }
 \value{
 \item{ind}{A list of indices to be used for each forecast from 
