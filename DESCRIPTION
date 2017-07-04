@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Data Sets
-Version: 0.4.2
-Date: 2017-05-18
+Version: 0.4.3
+Date: 2017-07-04
 Authors@R: c(person("MeteoSwiss",
     role=c("aut", "cph")),
     person("Jonas", "Bhend",  role = c("cre"), 

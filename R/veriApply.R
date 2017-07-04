@@ -241,7 +241,14 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
     xmask <- apply(!is.na(xall[,,1:(nens+nref+1),drop=F]), 1, all)
   }
   ## check whether there are complete forecast/observation pairs at all
-  stopifnot(any(xmask))
+  if(!any(xmask)) {
+    warning("No cases without missing values")
+    xall[1,,1:(nens + nref + 1)] <- rnorm(ncol(xall)*(nens + nref + 1))
+    xmask[1] <- TRUE
+    all.na <- TRUE
+  } else {
+    all.na <- FALSE
+  }
  
   ## indices for re-expansion of output
   maskexpand <- rep(NA, length(xmask))
@@ -319,6 +326,9 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
 
   ## reexpand the masked values
   olist <- lapply(olist, function(x) as.matrix(x)[maskexpand,])
+  if (all.na){
+    olist <- lapply(olist, function(x) x*NA)
+  }
   
   ## rearrange output to original dimensions
   out <- lapply(olist, function(x){
