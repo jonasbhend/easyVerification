@@ -1,7 +1,7 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Data Sets
-Version: 0.4.3
-Date: 2017-07-04
+Version: 0.4.4
+Date: 2017-07-18
 Authors@R: c(person("MeteoSwiss",
     role=c("aut", "cph")),
     person("Jonas", "Bhend",  role = c("cre"), 
@@ -25,12 +25,12 @@ Description: Set of tools to simplify application of atomic forecast
     functionality of this package.
 Depends:
     R (>= 3.0),
-    SpecsVerification (>= 0.4),
+    SpecsVerification (>= 0.5),
     stats,
     utils
 Imports:
     pbapply,
-    Rcpp
+    Rcpp (>= 0.12.9)
 Suggests:
     testthat,
     knitr,
