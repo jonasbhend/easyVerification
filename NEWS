@@ -1,7 +1,3 @@
-Changes in version 0.4.3
-  * Fixed missing value handling when no forecast-obs pairs without missing values are available
-  * Fixed bug with ROCSS
-
 Changes in version 0.4.4
   * fixed Rcpp dependency problems
 
