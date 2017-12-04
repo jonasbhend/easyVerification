@@ -1,5 +1,6 @@
 Changes in version 0.4.4
   * fixed Rcpp dependency problems
+  * fixed NA bug with reference forecasts
 
 Changes in version 0.4.3
   * improved missing value handling

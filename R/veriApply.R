@@ -34,15 +34,20 @@
 #' @param ensdim index of dimension with the different ensemble members
 #' @param prob probability threshold for category forecasts (see below)
 #' @param threshold absolute threshold for category forecasts (see below)
+#' @param strategy type of out-of-sample reference forecasts or  namelist with 
+#'   arguments as in \code{\link{indRef}} or list of indices for each 
+#'   forecast instance
 #' @param na.rm logical, should incomplete forecasts be used?
+#' @param fracmin fraction of forecasts that are not-missing for forecast to
+#'   be evaluated. Used to determine \code{nmin} when \code{is.null(nmin)}
+#' @param nmin number of forecasts that are not-missing for forecast to
+#'   be evaluated. If both \code{nmin} an d \code{fracmin} are set, \code{nmin}
+#'   takes precedence
 #' @param parallel logical, should parallel execution of verification be used 
 #'   (see below)?
 #' @param maxncpus upper bound for self-selected number of CPUs
 #' @param ncpus number of CPUs used in parallel computation, self-selected 
 #'   number of CPUs is used when \code{is.null(ncpus)} (the default).
-#' @param strategy type of out-of-sample reference forecasts or  namelist with 
-#'   arguments as in \code{\link{indRef}} or list of indices for each 
-#'   forecast instance
 #' @param ... additional arguments passed to \code{verifun}
 #'   
 #' @section List of functions to be called: The selection of verification 
@@ -143,8 +148,10 @@
 #' @export
 #' 
 veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) - 1, 
-                      ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, na.rm=FALSE, 
-                      parallel=FALSE, maxncpus=16, ncpus = NULL, strategy = 'none', ...){
+                      ensdim=length(dim(fcst)), prob=NULL, threshold=NULL, 
+                      strategy = 'none', na.rm=FALSE, fracmin=0.8, nmin=NULL, 
+                      parallel=FALSE, maxncpus=16, ncpus = NULL, 
+                      ...){
   
   ## check function that is supplied
   stopifnot(exists(verifun))
@@ -179,6 +186,7 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   nref <- if (!is.null(fcst.ref)) tail(dim(fcst.ref), 1) else 0
   ntim <- head(tail(dim(fcst), 2), 1)
   nrest <- length(obs)/ntim
+  if (is.null(nmin)) nmin <- ceiling(fracmin*ntim)
   
   ## deparse strategy
   if (length(strategy) == 1 & is.character(strategy)){
@@ -235,7 +243,7 @@ veriApply <- function(verifun, fcst, obs, fcst.ref=NULL, tdim=length(dim(fcst)) 
   ## mask missing values
   if (na.rm) {
     ## Only verify forecast/obs pairs with at least 1 complete pair
-    xmask <- apply(apply(!is.na(xall[,,1:(nens+nref+1),drop=F]), 1:2, all), 1, any)
+    xmask <- apply(apply(!is.na(xall[,,1:(nens+nref+1),drop=F]), 1:2, all), 1, sum) >= nmin
   } else {
     ## Verify only forecast/obs pairs that are completely non-missing
     xmask <- apply(!is.na(xall[,,1:(nens+nref+1),drop=F]), 1, all)

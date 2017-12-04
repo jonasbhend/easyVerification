@@ -6,8 +6,8 @@
 \usage{
 veriApply(verifun, fcst, obs, fcst.ref = NULL, tdim = length(dim(fcst)) - 1,
   ensdim = length(dim(fcst)), prob = NULL, threshold = NULL,
-  na.rm = FALSE, parallel = FALSE, maxncpus = 16, ncpus = NULL,
-  strategy = "none", ...)
+  strategy = "none", na.rm = FALSE, fracmin = 0.8, nmin = NULL,
+  parallel = FALSE, maxncpus = 16, ncpus = NULL, ...)
 }
 \arguments{
 \item{verifun}{Name of function to compute verification metric (score, skill 
@@ -28,7 +28,18 @@ scores only)}
 
 \item{threshold}{absolute threshold for category forecasts (see below)}
 
+\item{strategy}{type of out-of-sample reference forecasts or  namelist with 
+arguments as in \code{\link{indRef}} or list of indices for each 
+forecast instance}
+
 \item{na.rm}{logical, should incomplete forecasts be used?}
+
+\item{fracmin}{fraction of forecasts that are not-missing for forecast to
+be evaluated. Used to determine \code{nmin} when \code{is.null(nmin)}}
+
+\item{nmin}{number of forecasts that are not-missing for forecast to
+be evaluated. If both \code{nmin} an d \code{fracmin} are set, \code{nmin}
+takes precedence}
 
 \item{parallel}{logical, should parallel execution of verification be used 
 (see below)?}
@@ -37,10 +48,6 @@ scores only)}
 
 \item{ncpus}{number of CPUs used in parallel computation, self-selected 
 number of CPUs is used when \code{is.null(ncpus)} (the default).}
-
-\item{strategy}{type of out-of-sample reference forecasts or  namelist with 
-arguments as in \code{\link{indRef}} or list of indices for each 
-forecast instance}
 
 \item{...}{additional arguments passed to \code{verifun}}
 }
