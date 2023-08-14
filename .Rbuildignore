@@ -7,3 +7,4 @@ cran-comments.md$
 ^revdep$
 \.gitlab-ci\.yml
 \.nfs*
+^CRAN-SUBMISSION$
