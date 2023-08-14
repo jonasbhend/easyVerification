@@ -50,7 +50,7 @@
 #'
 #' @export
 climFairRpss <- function(ens, ens.ref, obs, format = c("category", "member")) {
-  if (packageVersion("SpecsVerification") >= 0.5) {
+  if (packageVersion("SpecsVerification") >= "0.5") {
     skillfun <- "SkillScore"
     out <- get(skillfun)(changearg(EnsRps, format = format)(ens, obs, R.new = Inf),
       changearg(EnsRps, format = format)(ens.ref, obs, R.new = NA),

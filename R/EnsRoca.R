@@ -63,7 +63,7 @@
 #' @export
 EnsRoca <- function(ens, obs, use.easy = FALSE) {
   stopifnot(is.matrix(ens), is.matrix(obs), length(obs) == length(ens))
-  if (packageVersion("SpecsVerification") >= 0.5 & !use.easy) {
+  if (packageVersion("SpecsVerification") >= "0.5" & !use.easy) {
     ens.prob <- count2prob(ens, type = 4)
     aucfun <- get("Auc")
     roc.area <- lapply(1:ncol(ens.prob), function(i) {
