@@ -6,3 +6,4 @@ README.html
 *.o
 *.so
 *.dll
+revdep
