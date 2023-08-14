@@ -1,7 +1,6 @@
 Package: easyVerification
 Title: Ensemble Forecast Verification for Large Data Sets
-Version: 0.4.4
-Date: 2017-12-04
+Version: 0.4.5
 Authors@R: c(person("MeteoSwiss",
     role=c("aut", "cph")),
     person("Jonas", "Bhend",  role = c("cre"), 
@@ -43,6 +42,8 @@ LinkingTo: Rcpp
 License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
-URL: http://www.meteoswiss.ch
+URL: http://www.meteoswiss.admin.ch
 VignetteBuilder: rmarkdown, R.rsp
-RoxygenNote: 6.0.1
+RoxygenNote: 7.2.3
+Encoding: UTF-8
+Config/build/clean-inst-doc: FALSE
