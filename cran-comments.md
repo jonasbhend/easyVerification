@@ -1,10 +1,10 @@
 ## CRAN NOTEs and ERRORs
-* There are no CRAN NOTEs and ERRORs.
+* There is a NOTE on specifying 'LazyData' without a 'data' directory that has been addressed.
 
 ## Test environments
-* local Ubuntu 12.04.5, R 3.0.2
-* local Ubuntu 16.04.1, R 3.3.2
-* win builder (devel only, release was unavailable at check time)
+* local Ubuntu 20.04 R-devel ()
+* local Ubuntu 20.04 R 4.0.5
+* win builder
 
 ## R CMD check results
 There were no ERRORs, no WARNINGs, no NOTEs.
