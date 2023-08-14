@@ -42,8 +42,9 @@ LinkingTo: Rcpp
 License: GPL-3
 Copyright: MeteoSwiss
 LazyData: true
-URL: http://www.meteoswiss.admin.ch
+URL: http://www.meteoswiss.admin.ch, https://github.com/jonasbhend/easyVerification
 VignetteBuilder: rmarkdown, R.rsp
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Config/build/clean-inst-doc: FALSE
+BugReports: https://github.com/jonasbhend/easyVerification/issues
